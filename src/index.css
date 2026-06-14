@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ───────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0a0f1e;
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0f1e;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e2d4a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #243554;
+}
+
+/* ── Typography ─────────────────────────────────────── */
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── Utility classes ────────────────────────────────── */
+.glass {
+  background: rgba(13, 18, 33, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #1e2d4a;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.rainbow-bar {
+  background: linear-gradient(
+    90deg,
+    #ef4444, #f97316, #eab308,
+    #22c55e, #3b82f6, #8b5cf6
+  );
+}
+
+/* ── Animations ─────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease forwards;
+}
+
+.animate-slide-in {
+  animation: slide-in-left 0.3s ease forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ── Form inputs ────────────────────────────────────── */
+.input-field {
+  width: 100%;
+  background: #080d1a;
+  border: 1px solid #1e2d4a;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #e2e8f0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  transition: border-color 0.15s;
+  outline: none;
+}
+.input-field:focus { border-color: #ef4444; }
+.input-field::placeholder { color: #334155; }
+.input-field[type="number"]::-webkit-inner-spin-button { opacity: 0.3; }
+
+/* ── Focus styles ───────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ── Selection ──────────────────────────────────────── */
+::selection {
+  background: rgba(59, 130, 246, 0.3);
+  color: #f1f5f9;
+}
