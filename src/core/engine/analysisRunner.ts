@@ -163,15 +163,15 @@ export function getResultsSummary(results: AnalysisResults, project: CivilOSProj
   if (results.status !== 'complete') return null
 
   // Max displacement across all nodes + load cases
-  const maxUz = results.nodeDisplacements.reduce(
+  const maxUz = (results.nodeDisplacements ?? results.displacements ?? []).reduce(
     (max, d) => Math.max(max, Math.abs(d.uz)), 0
   )
-  const maxUx = results.nodeDisplacements.reduce(
+  const maxUx = (results.nodeDisplacements ?? results.displacements ?? []).reduce(
     (max, d) => Math.max(max, Math.abs(d.ux)), 0
   )
 
   // Max reactions
-  const maxFz = results.supportReactions.reduce(
+  const maxFz = (results.supportReactions ?? results.reactions ?? []).reduce(
     (max, r) => Math.max(max, Math.abs(r.Fz)), 0
   )
 

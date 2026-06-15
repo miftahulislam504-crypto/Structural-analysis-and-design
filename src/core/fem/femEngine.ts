@@ -337,8 +337,8 @@ export function solveFEM(
   const nDOF   = nNodes * 3   // [w, θx, θy] per node
 
   // Build node index
-  const nodeIndex: Record<string, number> = {}
-  mesh.nodes.forEach((n, i) => { nodeIndex[n.id] = i })
+  const nodeIndex = new Map<string, number>()
+  mesh.nodes.forEach((n, i) => { nodeIndex.set(n.id, i) })
 
   // Global K and F
   const K = Array.from({ length: nDOF }, () => new Array(nDOF).fill(0))
@@ -346,9 +346,10 @@ export function solveFEM(
 
   // Assemble element stiffnesses
   for (const el of mesh.elements) {
-    const elNodes = el.nodeIds.slice(0, 4).map(nid => {
-      const n = mesh.nodes.find(nd => nd.id === nid)!
-      return { x: n.x, y: n.y, idx: nodeIndex[nid] }
+    const elNodes = el.nodeIds.slice(0, 4).map((nid: string | undefined) => {
+      const id = nid ?? ''
+      const n = mesh.nodes.find(nd => nd.id === id)!
+      return { x: n?.x ?? 0, y: n?.y ?? 0, idx: nodeIndex.get(id) ?? 0 }
     })
 
     const Ke = q4PlateStiffness(
@@ -378,7 +379,7 @@ export function solveFEM(
   if (soilModulus !== undefined) {
     for (const node of mesh.nodes) {
       const springK = soilModulus * tributaryArea(mesh, node) * 1e-6  // kN/mm
-      const dof = nodeIndex[node.id] * 3
+      const dof = (nodeIndex.get(node.id) ?? 0) * 3
       K[dof][dof] += springK
     }
   }
@@ -386,7 +387,7 @@ export function solveFEM(
   // Apply fixed BCs (penalty method)
   const PENALTY = 1e20
   for (const bc of mesh.boundaryConditions) {
-    const idx = nodeIndex[bc.nodeId]
+    const idx = nodeIndex.get(bc.nodeId) ?? 0
     if (bc.w)       { K[idx * 3][idx * 3]           += PENALTY }
     if (bc.thetaX)  { K[idx * 3 + 1][idx * 3 + 1]  += PENALTY }
     if (bc.thetaY)  { K[idx * 3 + 2][idx * 3 + 2]  += PENALTY }
@@ -406,12 +407,12 @@ export function solveFEM(
 export function extractFEMResults(
   mesh: FEMMesh,
   displacements: number[],
-  nodeIndex: Record<string, number>,
+  nodeIndex: Map<string, number>,
   E: number,
   nu: number
 ): FEMResults {
   const nodeResults: FEMNodeResult[] = mesh.nodes.map(n => {
-    const i = nodeIndex[n.id]
+    const i = nodeIndex.get(n.id) ?? 0
     return {
       nodeId: n.id,
       w:       displacements[i * 3],
@@ -421,9 +422,10 @@ export function extractFEMResults(
   })
 
   const elementResults: FEMElementResult[] = mesh.elements.map(el => {
-    const elNodes = el.nodeIds.slice(0, 4).map(nid => {
-      const n = mesh.nodes.find(nd => nd.id === nid)!
-      return { x: n.x, y: n.y, idx: nodeIndex[nid] }
+    const elNodes = el.nodeIds.slice(0, 4).map((nid: string | undefined) => {
+      const id = nid ?? ''
+      const n = mesh.nodes.find(nd => nd.id === id)!
+      return { x: n?.x ?? 0, y: n?.y ?? 0, idx: nodeIndex.get(id) ?? 0 }
     })
 
     // Get element displacements
@@ -708,7 +710,7 @@ export function checkMaterialNonlinearity(
       : 1.0
 
     return {
-      elementId: el.id,
+      elementId: el.elementId,
       cracked,
       Mcr: McrKNm,
       Mdemand: Mmax,

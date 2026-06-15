@@ -469,13 +469,13 @@ function LoadTab() {
       {/* Dead + Live */}
       <Card title="↓ গ্র্যাভিটি লোড">
         <div className="grid grid-cols-2 gap-4">
-          <InputField label="SDL — ফ্লোর (kN/m²)" value={loads.deadLoad.superimposedDL.toString()}
+          <InputField label="SDL — ফ্লোর (kN/m²)" value={(loads.deadLoad.superimposedDL ?? loads.deadLoad.deadLoad ?? 0).toString()}
             onChange={(v) => updateLoads({ ...loads, deadLoad: { ...loads.deadLoad, superimposedDL: Number(v) } })}
             type="number" hint="ফ্লোর ফিনিশ + পার্টিশন" />
           <InputField label="LL — ফ্লোর (kN/m²)" value={loads.liveLoad.liveLoad.toString()}
             onChange={(v) => updateLoads({ ...loads, liveLoad: { ...loads.liveLoad, liveLoad: Number(v) } })}
             type="number" hint="BNBC Table 2.2" />
-          <InputField label="SDL — ছাদ (kN/m²)" value={loads.roofLoad.superimposedDL.toString()}
+          <InputField label="SDL — ছাদ (kN/m²)" value={(loads.roofLoad.superimposedDL ?? loads.roofLoad.deadLoad ?? 0).toString()}
             onChange={(v) => updateLoads({ ...loads, roofLoad: { ...loads.roofLoad, superimposedDL: Number(v) } })}
             type="number" />
           <InputField label="LL — ছাদ (kN/m²)" value={loads.roofLoad.liveLoad.toString()}
@@ -493,7 +493,7 @@ function LoadTab() {
       {/* Seismic */}
       <Card title="🌀 ভূমিকম্প লোড (BNBC 2020)">
         <div className="grid grid-cols-2 gap-4">
-          <SelectField label="সিসমিক জোন" value={loads.seismicLoad.seismicZone.toString()}
+          <SelectField label="সিসমিক জোন" value={(loads.seismicLoad.seismicZone ?? loads.seismicLoad.zone ?? 2).toString()}
             onChange={(v) => updateSeismic('seismicZone', Number(v) as 1 | 2 | 3)}
             options={[
               { value: '1', label: 'Zone 1 — Z=0.12' },
@@ -518,9 +518,9 @@ function LoadTab() {
         {/* Auto-calc values */}
         <div className="mt-4 grid grid-cols-3 gap-3">
           {[
-            { label: 'Z', value: loads.seismicLoad.Z },
-            { label: 'Ca', value: loads.seismicLoad.Ca },
-            { label: 'Cv', value: loads.seismicLoad.Cv },
+            { label: 'Z', value: loads.seismicLoad.Z ?? 'auto' },
+            { label: 'Ca', value: loads.seismicLoad.Ca ?? 'auto' },
+            { label: 'Cv', value: loads.seismicLoad.Cv ?? 'auto' },
           ].map((item) => (
             <div key={item.label} className="bg-[#080d1a] rounded-lg p-3 border border-[#1a2030]">
               <div className="text-xs text-slate-600 font-mono">{item.label} (auto)</div>
@@ -530,7 +530,7 @@ function LoadTab() {
         </div>
 
         <div className="mt-4">
-          <SelectField label="বিশ্লেষণ পদ্ধতি" value={loads.seismicLoad.analysisMethod}
+          <SelectField label="বিশ্লেষণ পদ্ধতি" value={loads.seismicLoad.analysisMethod ?? 'static'}
             onChange={(v) => updateSeismic('analysisMethod', v)}
             options={[
               { value: 'static', label: 'স্ট্যাটিক — Equivalent Lateral Force (ELF)' },

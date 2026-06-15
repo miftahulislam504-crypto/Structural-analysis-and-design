@@ -141,7 +141,11 @@ export function assembleGlobalStiffness(
 
     const sp  = element.sectionProperties
     const mp  = element.materialProperties
-    const ax  = element.localAxis
+    const ax  = element.localAxis ?? {
+      x: [1, 0, 0] as [number,number,number],
+      y: [0, 1, 0] as [number,number,number],
+      z: [0, 0, 1] as [number,number,number],
+    }
 
     // Local stiffness
     const kL  = localStiffnessMatrix(mp.E, mp.G, sp.area, sp.Ix, sp.Iy, sp.J, L)

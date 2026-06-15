@@ -137,16 +137,16 @@ function parametersSection(project: CivilOSProject): ReportSection {
         { key: 'Steel Grade (fy)',     value: f2(materials.steel.fy), unit: 'MPa' },
         { key: 'Es',                   value: '200,000', unit: 'MPa' },
         { key: 'fyt (transverse)',     value: f2(materials.steel.fyt), unit: 'MPa' },
-        { key: 'Global Clear Cover',   value: materials.globalClearCover.toString(), unit: 'mm' },
+        { key: 'Global Clear Cover',   value: (materials.globalClearCover ?? 25).toString(), unit: 'mm' },
       ]},
 
       { type: 'heading', text: '1.4 Gravity Loads', level: 2 },
       { type: 'table',
         headers: ['Load Type', 'Value', 'Unit', 'Note'],
         rows: [
-          ['Dead Load (SDL — Floor)',  loads.deadLoad.superimposedDL, 'kN/m²', 'Floor finish + partition'],
+          ['Dead Load (SDL — Floor)',  loads.deadLoad.superimposedDL ?? loads.deadLoad.deadLoad ?? 0, 'kN/m²', 'Floor finish + partition'],
           ['Live Load (Floor)',        loads.liveLoad.liveLoad,       'kN/m²', 'BNBC Table 2.2'],
-          ['SDL (Roof)',               loads.roofLoad.superimposedDL, 'kN/m²', 'Waterproofing + screed'],
+          ['SDL (Roof)',               loads.roofLoad.superimposedDL ?? loads.roofLoad.deadLoad ?? 0, 'kN/m²', 'Waterproofing + screed'],
           ['Live Load (Roof)',         loads.roofLoad.liveLoad,       'kN/m²', 'BNBC'],
           ['Wall Load',               loads.deadLoad.wallLoad ?? 0,  'kN/m',  'Per beam'],
         ],
@@ -166,15 +166,15 @@ function seismicSection(project: CivilOSProject): ReportSection {
     { type: 'heading', text: '2. SEISMIC ANALYSIS (BNBC 2020)', level: 1 },
     { type: 'heading', text: '2.1 Seismic Parameters', level: 2 },
     { type: 'keyvalue', items: [
-      { key: 'Seismic Zone',                   value: `Zone ${sl.seismicZone}` },
-      { key: 'Zone Factor (Z)',                 value: sl.Z.toString() },
+      { key: 'Seismic Zone',                   value: `Zone ${sl.seismicZone ?? sl.zone ?? 2}` },
+      { key: 'Zone Factor (Z)',                 value: (sl.Z ?? 0).toString() },
       { key: 'Site Class',                      value: sl.siteClass },
-      { key: 'Ca',                              value: sl.Ca.toString() },
-      { key: 'Cv',                              value: sl.Cv.toString() },
+      { key: 'Ca',                              value: (sl.Ca ?? 0).toString() },
+      { key: 'Cv',                              value: (sl.Cv ?? 0).toString() },
       { key: 'Importance Factor (I)',           value: sl.importanceFactor.toString() },
       { key: 'Response Modification (R)',       value: sl.responseModificationFactor.toString() },
-      { key: 'Period Coefficient (Ct)',         value: sl.Ct.toString() },
-      { key: 'Analysis Method',                 value: sl.analysisMethod.replace('_', ' ').toUpperCase() },
+      { key: 'Period Coefficient (Ct)',         value: (sl.Ct ?? 0).toString() },
+      { key: 'Analysis Method',                 value: (sl.analysisMethod ?? 'static').replace('_', ' ').toUpperCase() },
     ]},
   ]
 
@@ -234,7 +234,7 @@ function windSection(project: CivilOSProject): ReportSection {
       { key: 'Basic Wind Speed (V)',  value: wl.basicWindSpeed.toString(), unit: 'km/h' },
       { key: 'Exposure Category',    value: wl.exposureCategory },
       { key: 'Topographic Factor',   value: wl.topographicFactor.toString() },
-      { key: 'Gust Factor (G)',       value: wl.gustFactor.toString() },
+      { key: 'Gust Factor (G)',       value: (wl.gustFactor ?? 0).toString() },
       { key: 'Importance Factor',    value: wl.importanceFactor.toString() },
     ]},
   ]
@@ -403,8 +403,8 @@ function analysisSection(project: CivilOSProject): ReportSection {
   ]
 
   if (results.status === 'complete') {
-    const maxUz = results.nodeDisplacements.reduce((m, d) => Math.max(m, Math.abs(d.uz)), 0)
-    const maxFz = results.supportReactions.reduce((m, r) => Math.max(m, Math.abs(r.Fz)), 0)
+    const maxUz = (results.nodeDisplacements ?? results.displacements ?? []).reduce((m, d) => Math.max(m, Math.abs(d.uz)), 0)
+    const maxFz = (results.supportReactions ?? results.reactions ?? []).reduce((m, r) => Math.max(m, Math.abs(r.Fz)), 0)
     const maxMz = results.memberForces.reduce((m, mf) =>
       Math.max(m, ...mf.stations.map(s => Math.abs(s.Mz))), 0)
     const maxVy = results.memberForces.reduce((m, mf) =>

@@ -79,6 +79,7 @@ export default function BIMModule() {
   // ── Export handlers ─────────────────────────
 
   function handleExport(target: ExportTarget) {
+    if (!project) return
     setExportState(s => ({ ...s, [target]: 'generating' }))
     try {
       const file = target === 'architectural'

@@ -3,6 +3,7 @@ import { useProjectStore } from '../../store/useProjectStore'
 import { assembleReport, ReportDocument, ReportType, ReportContent } from '../../core/report/reportEngine'
 import { exportToPDF, exportToDOCX, exportBBSToExcel } from '../../core/report/exporters'
 import { generateBBS } from '../../core/bbs/bbsEngine'
+import type { CivilOSProject } from '../../lib/types'
 
 const REPORT_TYPES: { id: ReportType; label: string; icon: string; desc: string; color: string }[] = [
   { id: 'full',          label: 'Complete Report',      icon: '📋', desc: 'সব section একসাথে',         color: '#ef4444' },
@@ -24,19 +25,20 @@ export default function ReportModule() {
   const [xlsxState,    setXlsxState]      = useState<ExportState>('idle')
   const [activeSection, setActiveSection] = useState<string | null>(null)
 
-  if (!project) return null
-
   // Auto-generate preview when type changes
-  const doc = useMemo<ReportDocument>(
-    () => assembleReport(project, selectedType),
-    [selectedType, project.meta, project.members, project.grid,
-     project.loads, project.materials, project.results]
+  const doc = useMemo<ReportDocument | null>(
+    () => project ? assembleReport(project, selectedType) : null,
+    [selectedType, project]
   )
+
+  if (!project || !doc) return null
+
+  const safeDoc = doc as ReportDocument
 
   async function handlePDF() {
     setPdfState('generating')
     try {
-      await exportToPDF(doc)
+      await exportToPDF(safeDoc)
       setPdfState('done')
       setTimeout(() => setPdfState('idle'), 3000)
     } catch (e) {
@@ -49,7 +51,7 @@ export default function ReportModule() {
   async function handleDOCX() {
     setDocxState('generating')
     try {
-      await exportToDOCX(doc)
+      await exportToDOCX(safeDoc)
       setDocxState('done')
       setTimeout(() => setDocxState('idle'), 3000)
     } catch (e) {
@@ -62,7 +64,7 @@ export default function ReportModule() {
   async function handleExcel() {
     setXlsxState('generating')
     try {
-      const sheet = generateBBS(project)
+      const sheet = generateBBS(project as CivilOSProject)
       await exportBBSToExcel(sheet)
       setXlsxState('done')
       setTimeout(() => setXlsxState('idle'), 3000)
@@ -148,7 +150,7 @@ export default function ReportModule() {
             <div className="text-slate-500">Document Info</div>
             <div className="flex justify-between text-slate-400">
               <span>Sections</span>
-              <span className="text-slate-200">{doc.sections.length}</span>
+              <span className="text-slate-200">{safeDoc.sections.length}</span>
             </div>
             <div className="flex justify-between text-slate-400">
               <span>Type</span>
@@ -167,9 +169,9 @@ export default function ReportModule() {
         {/* Preview header */}
         <div className="sticky top-0 z-10 px-6 py-3 bg-[#080d1a] border-b border-[#1e2d4a] flex items-center gap-3">
           <span className="text-slate-500 font-mono text-xs">PREVIEW</span>
-          <span className="text-slate-300 font-mono text-xs font-semibold">{doc.title}</span>
+          <span className="text-slate-300 font-mono text-xs font-semibold">{safeDoc.title}</span>
           <span className="ml-auto text-slate-600 font-mono text-xs">
-            {new Date(doc.generatedAt).toLocaleTimeString()}
+            {new Date(safeDoc.generatedAt).toLocaleTimeString()}
           </span>
         </div>
 
@@ -186,16 +188,16 @@ export default function ReportModule() {
             <div className="text-xs font-mono text-slate-500 mb-2 tracking-widest">
               CivilOS STRUCTURAL v2.0
             </div>
-            <div className="text-2xl font-bold font-mono text-white mb-1">{doc.title}</div>
-            <div className="text-slate-400 font-mono text-sm">{doc.subtitle}</div>
+            <div className="text-2xl font-bold font-mono text-white mb-1">{safeDoc.title}</div>
+            <div className="text-slate-400 font-mono text-sm">{safeDoc.subtitle}</div>
 
             <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-2 text-xs font-mono">
               {[
-                ['Project No.', doc.projectMeta.projectNo],
-                ['Date', doc.projectMeta.date],
-                ['Client', doc.projectMeta.client || '—'],
-                ['Engineer', doc.projectMeta.engineer || '—'],
-                ['Code', doc.projectMeta.code],
+                ['Project No.', safeDoc.projectMeta.projectNo],
+                ['Date', safeDoc.projectMeta.date],
+                ['Client', safeDoc.projectMeta.client || '—'],
+                ['Engineer', safeDoc.projectMeta.engineer || '—'],
+                ['Code', safeDoc.projectMeta.code],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-2">
                   <span className="text-slate-600">{k}:</span>
@@ -208,7 +210,7 @@ export default function ReportModule() {
 
         {/* Sections */}
         <div className="px-6 py-6 space-y-4">
-          {doc.sections.map((section, si) => (
+          {safeDoc.sections.map((section, si) => (
             <div key={section.id} className="rounded-xl border border-[#1e2d4a] overflow-hidden">
               {/* Section header */}
               <button
@@ -359,8 +361,8 @@ function ContentPreview({ item }: { item: ReportContent }) {
     case 'checklist':
       return (
         <div className="space-y-1.5 max-h-48 overflow-y-auto">
-          {item.items.map((ci, i) => {
-            const colors = { pass: '#22c55e', fail: '#ef4444', warning: '#f97316', not_checked: '#475569' }
+          {item.items.map((ci: { label: string; status: 'pass'|'fail'|'warning'|'not_checked'; value: string }, i: number) => {
+            const colors: Record<string, string> = { pass: '#22c55e', fail: '#ef4444', warning: '#f97316', not_checked: '#475569' }
             return (
               <div key={i} className="flex items-center gap-2 text-xs font-mono">
                 <span style={{ color: colors[ci.status] }}>

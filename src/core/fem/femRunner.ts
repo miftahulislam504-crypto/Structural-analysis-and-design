@@ -65,8 +65,9 @@ export function runSlabFEM(
   const ly = yCoords.length >= 2 ? yCoords[1] - yCoords[0] : 4000
 
   // Load intensity from project
-  const q = (project.loads.liveLoad.liveLoad + project.loads.deadLoad.superimposedDL) * 1.2
-    + project.loads.deadLoad.superimposedDL * 0.4  // factored
+  const SDL = project.loads.deadLoad.superimposedDL ?? project.loads.deadLoad.deadLoad ?? 0
+  const q = (project.loads.liveLoad.liveLoad + SDL) * 1.2
+    + SDL * 0.4  // factored
   // kN/m² (approximation; full load combo from loadCaseId in V2)
 
   // Generate mesh
@@ -107,8 +108,8 @@ export function runSlabFEM(
 
   // Solve
   const { displacements } = solveFEM(mesh, E, nu)
-  const nodeIndex: Record<string, number> = {}
-  mesh.nodes.forEach((n, i) => { nodeIndex[n.id] = i })
+  const nodeIndex = new Map<string, number>()
+  mesh.nodes.forEach((n, i) => { nodeIndex.set(n.id, i) })
   const femResults = extractFEMResults(mesh, displacements, nodeIndex, E, nu)
 
   // Punching checks at each column
@@ -201,7 +202,7 @@ export function runRaftFEM(
     if (!col) return null
     const xLine = grid.xLines.find(l => l.id === col.gridX)
     const yLine = grid.yLines.find(l => l.id === col.gridY)
-    const P = project.results.supportReactions.find(r =>
+    const P = (project.results.supportReactions ?? project.results.reactions ?? []).find(r =>
       r.nodeId.includes(col.gridX) && r.nodeId.includes(col.gridY)
     )?.Fz ?? 500  // kN default
     if (!xLine || !yLine) return null
@@ -216,8 +217,8 @@ export function runRaftFEM(
 
   // Solve
   const { displacements } = solveFEM(mesh, E, nu, config.soilModulus)
-  const nodeIndex: Record<string, number> = {}
-  mesh.nodes.forEach((n, i) => { nodeIndex[n.id] = i })
+  const nodeIndex = new Map<string, number>()
+  mesh.nodes.forEach((n, i) => { nodeIndex.set(n.id, i) })
   const femResults = extractFEMResults(mesh, displacements, nodeIndex, E, nu)
 
   // Soil pressure

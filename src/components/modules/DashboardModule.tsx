@@ -94,14 +94,14 @@ export default function DashboardModule() {
         <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] p-5">
           <h3 className="text-slate-300 font-mono font-semibold text-sm mb-4">🌀 ভূমিকম্প প্যারামিটার</h3>
           <div className="space-y-2">
-            <ParamRow label="সিসমিক জোন" value={`Zone ${project.loads.seismicLoad.seismicZone}`} />
+            <ParamRow label="সিসমিক জোন" value={`Zone ${project.loads.seismicLoad.seismicZone ?? project.loads.seismicLoad.zone ?? 2}`} />
             <ParamRow label="সাইট ক্লাস" value={project.loads.seismicLoad.siteClass} />
-            <ParamRow label="Z (Zone Factor)" value={project.loads.seismicLoad.Z.toString()} />
+            <ParamRow label="Z (Zone Factor)" value={(project.loads.seismicLoad.Z ?? 0).toString()} />
             <ParamRow label="R (Response Mod.)" value={project.loads.seismicLoad.responseModificationFactor.toString()} />
             <ParamRow label="বিশ্লেষণ পদ্ধতি" value={
-              project.loads.seismicLoad.analysisMethod === 'static'
+              (project.loads.seismicLoad.analysisMethod ?? 'static') === 'static'
                 ? 'স্ট্যাটিক (ELF)'
-                : project.loads.seismicLoad.analysisMethod === 'response_spectrum'
+                : (project.loads.seismicLoad.analysisMethod ?? 'static') === 'response_spectrum'
                 ? 'রেসপন্স স্পেকট্রাম'
                 : 'টাইম হিস্ট্রি'
             } />

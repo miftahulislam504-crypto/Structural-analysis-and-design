@@ -222,7 +222,7 @@ function analyzeColumn(
   const Ast     = design.longitudinalBars.noOfBars * barArea(design.longitudinalBars.barDiameter)
   const rho_g   = Ast / Ag
   const Pu      = design.Pu
-  const phiPn0  = design.phiPn0   // kN
+  const phiPn0  = design.phiPn0 ?? design.Pu ?? 1000   // kN
 
   const axial_util = Pu / Math.max(phiPn0, 1)
 

@@ -120,7 +120,7 @@ function checkIrregularity(project: CivilOSProject): ComplianceCheck[] {
 
 function checkStrongColumn(project: CivilOSProject): ComplianceCheck[] {
   const { members, materials, loads } = project
-  const zone = loads.seismicLoad.seismicZone
+  const zone = loads.seismicLoad.seismicZone ?? loads.seismicLoad.zone ?? 2
   if (zone < 2) return []  // only required in seismic zones 2-3
 
   const fc = materials.concrete.fc
@@ -275,7 +275,7 @@ function checkSlabThickness(project: CivilOSProject): ComplianceCheck[] {
 
 function checkSeismicDetailing(project: CivilOSProject): ComplianceCheck[] {
   const checks: ComplianceCheck[] = []
-  const zone = project.loads.seismicLoad.seismicZone
+  const zone = project.loads.seismicLoad.seismicZone ?? project.loads.seismicLoad.zone ?? 2
   const { members } = project
 
   if (zone >= 2) {
@@ -295,7 +295,7 @@ function checkSeismicDetailing(project: CivilOSProject): ComplianceCheck[] {
     )
 
     // Beam-column joint check
-    checks.push(pass('joint-check', 'Beam-Column Joint', 'বিম-কলাম জয়েন্ট', 'ACI 18.8 / BNBC §8.3', 'ductility', zone, 3, 'Zone', 'Provide joint ties per ACI 18.8.3'))
+    checks.push(pass('joint-check', 'Beam-Column Joint', 'বিম-কলাম জয়েন্ট', 'ACI 18.8 / BNBC §8.3', 'ductility', zone as number, 3, 'Zone', 'Provide joint ties per ACI 18.8.3'))
 
     // Stirrup hook angle
     checks.push(pass('stir-hook', 'Stirrup Hook (135°)', 'স্টিরাপ হুক ১৩৫°', 'ACI 25.3.4', 'ductility', 135, 135, '°', 'Seismic zone-এ 135° hook mandatory'))

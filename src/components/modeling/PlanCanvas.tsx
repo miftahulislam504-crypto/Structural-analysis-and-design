@@ -86,8 +86,8 @@ export default function PlanCanvas({
   const intersections = getGridIntersections(grid)
 
   // Current story members
-  const storyColumns = members.columns.filter(c => c.storyId === activeStory.id)
-  const storyBeams = members.beams.filter(b => b.storyId === activeStory.id)
+  const storyColumns = members.columns.filter(c => c.storyId === activeStory?.id)
+  const storyBeams = members.beams.filter(b => b.storyId === activeStory?.id)
 
   // ── Column size on canvas ────────────────────────────────────
   function colSizePx(col: Column): { w: number; h: number } {
@@ -129,7 +129,7 @@ export default function PlanCanvas({
     if (isPanning) {
       const dx = pos.x - panStart.x
       const dy = pos.y - panStart.y
-      setTransform(t => ({ ...t, offsetX: t.offsetX + dx, offsetY: t.offsetY + dy }))
+      setTransform((t: CanvasTransform) => ({ ...t, offsetX: t.offsetX + dx, offsetY: t.offsetY + dy }))
       setPanStart({ x: pos.x, y: pos.y })
     }
   }
@@ -159,10 +159,10 @@ export default function PlanCanvas({
         label: `C${members.columns.length + 1}`,
         gridX: snapped.gridX,
         gridY: snapped.gridY,
-        storyId: activeStory.id,
+        storyId: activeStory!.id,
         section: { type: 'rectangular', width: 300, depth: 400 },
         materialId: materials.concrete.id,
-        clearCover: materials.globalClearCover,
+        clearCover: materials.globalClearCover ?? 25,
         rotation: 0,
       }
       addColumn(col)
@@ -186,10 +186,10 @@ export default function PlanCanvas({
           label: `B${members.beams.length + 1}`,
           startNodeId: beamStart.nodeId,
           endNodeId: nodeId,
-          storyId: activeStory.id,
+          storyId: activeStory!.id,
           section: { type: 'rectangular', width: 250, depth: 450 },
           materialId: materials.concrete.id,
-          clearCover: materials.globalClearCover,
+          clearCover: materials.globalClearCover ?? 25,
           isCantilever: false,
         }
         addBeam(beam)
@@ -208,7 +208,7 @@ export default function PlanCanvas({
     const zoomFactor = e.evt.deltaY < 0 ? 1.1 : 0.9
     const newScale = Math.max(0.02, Math.min(0.5, transform.scale * zoomFactor))
 
-    setTransform(t => ({
+    setTransform((t: CanvasTransform) => ({
       scale: newScale,
       offsetX: pos.x - (pos.x - t.offsetX) * (newScale / t.scale),
       offsetY: pos.y - (pos.y - t.offsetY) * (newScale / t.scale),
@@ -336,11 +336,11 @@ export default function PlanCanvas({
             })}
 
             {/* Grid intersection dots */}
-            {intersections.map((pt) => {
+            {intersections.map((pt: { x: number; y: number; gridX: string; gridY: string }) => {
               const cp = gridMmToCanvas(pt.x, pt.y)
               return (
                 <Circle
-                  key={pt.label}
+                  key={`${pt.gridX}_${pt.gridY}`}
                   x={cp.x} y={cp.y}
                   radius={2}
                   fill={COLORS.gridDot}

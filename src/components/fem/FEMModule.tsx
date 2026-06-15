@@ -70,6 +70,7 @@ export default function FEMModule() {
   // ── Runners ──────────────────────────────────
 
   function runSlab() {
+    if (!project) return
     if (!slabConfig.slabId) { setError('একটি Slab বেছে নিন'); return }
     setFemStatus('meshing')
     setError(null)
@@ -85,6 +86,7 @@ export default function FEMModule() {
   }
 
   function runRaft() {
+    if (!project) return
     if (!raftConfig.foundationId) { setError('একটি Foundation বেছে নিন'); return }
     setFemStatus('solving')
     setError(null)
@@ -100,6 +102,7 @@ export default function FEMModule() {
   }
 
   function runPDeltaAnalysis() {
+    if (!project) return
     setFemStatus('solving')
     setError(null)
     try {

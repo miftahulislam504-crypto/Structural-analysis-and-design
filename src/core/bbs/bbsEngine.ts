@@ -115,7 +115,7 @@ function uShapeBar(a: number, b: number, dia: number): number {
 function beamBBS(project: CivilOSProject): BBSBar[] {
   const bars: BBSBar[] = []
   const { members, grid, loads } = project
-  const seismic = loads.seismicLoad.seismicZone >= 2
+  const seismic = (loads.seismicLoad.seismicZone ?? loads.seismicLoad.zone ?? 2) >= 2
 
   for (const beam of members.beams) {
     const story = grid.stories.find(s => s.id === beam.storyId)
@@ -222,7 +222,7 @@ function beamBBS(project: CivilOSProject): BBSBar[] {
 function columnBBS(project: CivilOSProject): BBSBar[] {
   const bars: BBSBar[] = []
   const { members, grid, loads } = project
-  const seismic = loads.seismicLoad.seismicZone >= 2
+  const seismic = (loads.seismicLoad.seismicZone ?? loads.seismicLoad.zone ?? 2) >= 2
 
   // Group columns by label (same column different stories)
   const colGroups = new Map<string, typeof members.columns>()

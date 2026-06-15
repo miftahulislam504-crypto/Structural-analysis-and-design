@@ -81,7 +81,7 @@ export function calculateBuildingPeriod(
   const Ta = Ct * Math.pow(hn, 0.75)
 
   // Upper bound Cu — BNBC 2020 Table 6.2.24
-  const zone = project.loads.seismicLoad.seismicZone
+  const zone = (project.loads.seismicLoad.seismicZone ?? project.loads.seismicLoad.zone ?? 2) as 1|2|3
   const Cv   = getCv(zone, project.loads.seismicLoad.siteClass)
   const Cu   = Cv >= 0.4 ? 1.2 : Cv >= 0.3 ? 1.3 : Cv >= 0.2 ? 1.4 : 1.5
 
@@ -116,7 +116,7 @@ export function calculateBaseShear(
   seismicWeight: number  // kN
 ): BaseShearResult {
   const sl = project.loads.seismicLoad
-  const zone = sl.seismicZone as 1|2|3
+  const zone = (sl.seismicZone ?? sl.zone ?? 2) as 1|2|3
 
   const Ca = getCa(zone, sl.siteClass)
   const Cv = getCv(zone, sl.siteClass)
@@ -189,7 +189,7 @@ export function calculateSeismicLoad(project: CivilOSProject): SeismicLoadResult
   let totalWeight = 0
 
   for (const story of grid.stories) {
-    const DL_SDL  = loads.deadLoad.superimposedDL   // kN/m²
+    const DL_SDL  = loads.deadLoad.superimposedDL ?? loads.deadLoad.deadLoad ?? 0   // kN/m²
     const wallLoad = loads.deadLoad.wallLoad ?? 10  // kN/m (per beam)
 
     // Floor area (m²)

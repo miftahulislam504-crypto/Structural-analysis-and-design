@@ -27,6 +27,12 @@ export interface ProjectMeta {
   structuralSystem: StructuralSystem
   buildingUse: BuildingUse
   importanceCategory: ImportanceCategory
+  // Extended fields
+  template?: string
+  createdBy?: string
+  numberOfStoreys?: number
+  totalHeight?: number
+  floorArea?: number
 }
 
 export type ProjectStatus = 'draft' | 'in_review' | 'approved' | 'archived'
@@ -37,6 +43,9 @@ export type StructuralSystem =
   | 'shear_wall'
   | 'steel_frame'
   | 'load_bearing'
+  | 'OMRF'
+  | 'SMRF'
+  | 'IMRF'
 
 export type BuildingUse =
   | 'residential'
@@ -78,7 +87,7 @@ export interface Story {
 export interface MaterialData {
   concrete: ConcreteMaterial
   steel: SteelMaterial
-  globalClearCover: number // mm
+  globalClearCover?: number // mm
 }
 
 export interface ConcreteMaterial {
@@ -112,38 +121,47 @@ export interface LoadDefinition {
 }
 
 export interface FloorLoad {
-  selfWeight: boolean
-  superimposedDL: number // kN/m²
-  liveLoad: number       // kN/m²
-  wallLoad?: number      // kN/m
+  selfWeight?: boolean
+  superimposedDL?: number // kN/m²
+  liveLoad: number        // kN/m²
+  wallLoad?: number       // kN/m
+  deadLoad?: number       // alias for superimposedDL
+  finishLoad?: number
+  partitionLoad?: number
+  roofLiveLoad?: number
 }
 
 export interface RoofLoad {
-  selfWeight: boolean
-  superimposedDL: number
+  selfWeight?: boolean
+  superimposedDL?: number
   liveLoad: number
   waterTank?: number
+  deadLoad?: number     // alias
 }
 
 export interface WindLoadParams {
   basicWindSpeed: number
   exposureCategory: 'B' | 'C' | 'D'
   topographicFactor: number
-  gustFactor: number
+  gustFactor?: number
   importanceFactor: number
-  pressureCoefficient: number
+  pressureCoefficient?: number
+  directionFactor?: number
 }
 
 export interface SeismicLoadParams {
-  seismicZone: 1 | 2 | 3
+  seismicZone?: 1 | 2 | 3
+  zone?: 1 | 2 | 3             // alias
   siteClass: 'SA' | 'SB' | 'SC' | 'SD' | 'SE'
   importanceFactor: number
   responseModificationFactor: number
-  Z: number
-  Ca: number
-  Cv: number
-  Ct: number
-  analysisMethod: 'static' | 'response_spectrum' | 'time_history'
+  deflectionAmplificationFactor?: number
+  overstrengthFactor?: number
+  Z?: number
+  Ca?: number
+  Cv?: number
+  Ct?: number
+  analysisMethod?: 'static' | 'response_spectrum' | 'time_history'
 }
 
 export interface LoadCombination {
@@ -170,6 +188,8 @@ export interface MemberData {
   walls: StructuralWall[]
   foundations: Foundation[]
   stairs: Staircase[]
+  piles?: Pile[]
+  staircases?: Staircase[]   // alias for stairs
 }
 
 export interface RectangularSection {
@@ -302,7 +322,9 @@ export interface AnalyticalModel {
   nodes: AnalyticalNode[]
   elements: AnalyticalElement[]
   restraints: BoundaryCondition[]
+  boundaryConditions?: BoundaryCondition[]  // alias for restraints
   diaphragms: Diaphragm[]
+  loadPatterns?: LoadPattern[]
 }
 
 export interface AnalyticalNode {
@@ -323,6 +345,12 @@ export interface DOFIndex {
   rz: number
 }
 
+export interface LocalAxis {
+  x: [number, number, number]
+  y: [number, number, number]
+  z: [number, number, number]
+}
+
 export interface AnalyticalElement {
   id: string
   type: 'frame' | 'shell' | 'link'
@@ -332,6 +360,7 @@ export interface AnalyticalElement {
   sectionProperties: SectionProperties
   materialProperties: MaterialProperties
   releases: MemberReleases
+  localAxis?: LocalAxis
 }
 
 export interface SectionProperties {
@@ -377,6 +406,12 @@ export interface Diaphragm {
   masterNodeId: string
 }
 
+export interface LoadPattern {
+  id: string
+  name: string
+  type: 'dead' | 'live' | 'wind' | 'seismic' | 'other'
+}
+
 // ─────────────────────────────────────────────
 // ANALYSIS RESULTS
 // ─────────────────────────────────────────────
@@ -384,11 +419,14 @@ export interface Diaphragm {
 export interface AnalysisResults {
   status: 'pending' | 'running' | 'complete' | 'failed'
   timestamp?: number
-  nodeDisplacements: NodeDisplacement[]
-  supportReactions: SupportReaction[]
+  nodeDisplacements?: NodeDisplacement[]
+  supportReactions?: SupportReaction[]
   memberForces: MemberForces[]
-  modalResults?: ModalResults
+  modalResults?: ModalResults | null
   storyDrifts?: StoryDrift[]
+  storyDrift?: StoryDrift[]     // alias
+  displacements?: NodeDisplacement[]  // alias
+  reactions?: SupportReaction[]       // alias
   errorLog?: string[]
 }
 
@@ -540,6 +578,7 @@ export interface ColumnDesign {
   tieBar: number
   tieSpacing: number
   pmDiagram: PMPoint[]
+  phiPn0?: number    // kN — pure axial capacity
 }
 
 export interface PMPoint {

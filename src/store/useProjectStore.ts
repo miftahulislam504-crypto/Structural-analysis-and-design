@@ -24,6 +24,8 @@ import {
   ComplianceReport,
   LoadDefinition,
   MaterialData,
+  Column,
+  Beam,
 } from '../lib/types'
 import {
   generateId, now,
@@ -119,9 +121,9 @@ function makeGrid(template: ProjectTemplate): GridData {
 
 function makeDefaultLoads(): LoadDefinition {
   return {
-    deadLoad:  { deadLoad: 3.5, finishLoad: 1.5, partitionLoad: 1.0 },
+    deadLoad:  { liveLoad: 0, deadLoad: 3.5, finishLoad: 1.5, partitionLoad: 1.0 },
     liveLoad:  { liveLoad: 2.0, roofLiveLoad: 1.5 },
-    roofLoad:  { deadLoad: 3.0, liveLoad: 1.5 },
+    roofLoad:  { liveLoad: 1.5, deadLoad: 3.0 },
     windLoad: {
       basicWindSpeed: 260,
       exposureCategory: 'B',
@@ -131,7 +133,7 @@ function makeDefaultLoads(): LoadDefinition {
     },
     seismicLoad: {
       zone: 2,
-      siteClass: 'D',
+      siteClass: 'SC',
       importanceFactor: 1.0,
       responseModificationFactor: 5,
       deflectionAmplificationFactor: 4.5,
@@ -151,22 +153,22 @@ function makeDefaultMaterials(): MaterialData {
 function makeEmptyMembers(): MemberData {
   return {
     columns: [], beams: [], slabs: [],
-    walls: [], foundations: [], piles: [], staircases: [],
+    walls: [], foundations: [], stairs: [],
   }
 }
 
 function makeEmptyAnalyticalModel(): AnalyticalModel {
   return {
-    nodes: [], elements: [], boundaryConditions: [],
-    diaphragms: [], loadPatterns: [],
+    nodes: [], elements: [], restraints: [],
+    diaphragms: [],
   }
 }
 
 function makeEmptyResults(): AnalysisResults {
   return {
     status: 'pending',
-    displacements: [], reactions: [], memberForces: [],
-    modalResults: null, storyDrift: [],
+    memberForces: [],
+    modalResults: undefined,
   }
 }
 
@@ -206,7 +208,8 @@ function buildProject(
     createdAt:     ts,
     updatedAt:     ts,
     createdBy:     uid,
-    structuralSystem: 'OMRF',
+    version:       '1.0',
+    structuralSystem: 'rcc_frame',
     buildingUse:      'residential',
     importanceCategory: 'II',
     numberOfStoreys:    1,
@@ -238,6 +241,7 @@ interface ProjectState {
   projectList: ProjectSummary[]
   isLoading:   boolean
   isSaving:    boolean
+  isDirty:     boolean
   error:       string | null
 
   // Actions
@@ -249,6 +253,20 @@ interface ProjectState {
   updateProject:    (patch: Partial<CivilOSProject>) => void
   closeProject:     () => void
   clearError:       () => void
+
+  // Granular update actions
+  updateMeta:       (patch: Partial<ProjectMeta>) => void
+  updateGrid:       (grid: GridData) => void
+  updateMaterials:  (materials: MaterialData) => void
+  updateLoads:      (loads: LoadDefinition) => void
+
+  // Member actions
+  addColumn:    (column: Column) => void
+  addBeam:      (beam: Beam) => void
+  updateColumn: (id: string, patch: Partial<Column>) => void
+  updateBeam:   (id: string, patch: Partial<Beam>) => void
+  deleteColumn: (id: string) => void
+  deleteBeam:   (id: string) => void
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -256,18 +274,17 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   projectList: [],
   isLoading:   false,
   isSaving:    false,
+  isDirty:     false,
   error:       null,
 
   setProject: (project) => {
-    set({ project })
-    // Auto-save to Firestore
+    set({ project, isDirty: true })
     get().saveProject()
   },
 
   createProject: (template, meta, uid = 'local') => {
     const project = buildProject(template, meta, uid)
-    set({ project })
-    // Fire-and-forget save
+    set({ project, isDirty: false })
     get().saveProject().catch(console.error)
     return project
   },
@@ -281,7 +298,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         return
       }
       const data = snap.data() as CivilOSProject
-      set({ project: data, isLoading: false })
+      set({ project: data, isLoading: false, isDirty: false })
     } catch (e: any) {
       set({ error: `লোড ব্যর্থ: ${e.message}`, isLoading: false })
     }
@@ -294,7 +311,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     try {
       const updated = { ...project, meta: { ...project.meta, updatedAt: now() } }
       await setDoc(doc(db, 'projects', project.id), updated)
-      set({ project: updated, isSaving: false })
+      set({ project: updated, isSaving: false, isDirty: false })
     } catch (e: any) {
       console.error('Save failed:', e)
       set({ isSaving: false })
@@ -328,12 +345,87 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const { project } = get()
     if (!project) return
     const updated = { ...project, ...patch }
-    set({ project: updated })
-    // Debounced save — fire and forget
+    set({ project: updated, isDirty: true })
     get().saveProject().catch(console.error)
   },
 
-  closeProject: () => set({ project: null }),
+  closeProject: () => set({ project: null, isDirty: false }),
 
   clearError: () => set({ error: null }),
+
+  // ── Granular update actions ──────────────────────────────────
+  updateMeta: (patch) => {
+    const { project } = get()
+    if (!project) return
+    set({ project: { ...project, meta: { ...project.meta, ...patch } }, isDirty: true })
+    get().saveProject().catch(console.error)
+  },
+
+  updateGrid: (grid) => {
+    const { project } = get()
+    if (!project) return
+    set({ project: { ...project, grid }, isDirty: true })
+    get().saveProject().catch(console.error)
+  },
+
+  updateMaterials: (materials) => {
+    const { project } = get()
+    if (!project) return
+    set({ project: { ...project, materials }, isDirty: true })
+    get().saveProject().catch(console.error)
+  },
+
+  updateLoads: (loads) => {
+    const { project } = get()
+    if (!project) return
+    set({ project: { ...project, loads }, isDirty: true })
+    get().saveProject().catch(console.error)
+  },
+
+  // ── Member actions ───────────────────────────────────────────
+  addColumn: (column) => {
+    const { project } = get()
+    if (!project) return
+    const members = { ...project.members, columns: [...project.members.columns, column] }
+    set({ project: { ...project, members }, isDirty: true })
+  },
+
+  addBeam: (beam) => {
+    const { project } = get()
+    if (!project) return
+    const members = { ...project.members, beams: [...project.members.beams, beam] }
+    set({ project: { ...project, members }, isDirty: true })
+  },
+
+  updateColumn: (id, patch) => {
+    const { project } = get()
+    if (!project) return
+    const columns = project.members.columns.map(c => c.id === id ? { ...c, ...patch } : c)
+    const members = { ...project.members, columns }
+    set({ project: { ...project, members }, isDirty: true })
+  },
+
+  updateBeam: (id, patch) => {
+    const { project } = get()
+    if (!project) return
+    const beams = project.members.beams.map(b => b.id === id ? { ...b, ...patch } : b)
+    const members = { ...project.members, beams }
+    set({ project: { ...project, members }, isDirty: true })
+  },
+
+  deleteColumn: (id) => {
+    const { project } = get()
+    if (!project) return
+    const columns = project.members.columns.filter(c => c.id !== id)
+    const members = { ...project.members, columns }
+    set({ project: { ...project, members }, isDirty: true })
+  },
+
+  deleteBeam: (id) => {
+    const { project } = get()
+    if (!project) return
+    const beams = project.members.beams.filter(b => b.id !== id)
+    const members = { ...project.members, beams }
+    set({ project: { ...project, members }, isDirty: true })
+  },
 }))

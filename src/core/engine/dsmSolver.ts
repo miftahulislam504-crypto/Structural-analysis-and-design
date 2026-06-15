@@ -70,7 +70,7 @@ export function assembleLoadVector(
 
     // Distributed load on beam (kN/m)
     const wDL = DLfactor * (
-      loads.deadLoad.superimposedDL * tributaryWidth +
+      (loads.deadLoad.superimposedDL ?? loads.deadLoad.deadLoad ?? 0) * tributaryWidth +
       (loads.deadLoad.wallLoad ?? 0)
     )
     const wLL = LLfactor * loads.liveLoad.liveLoad * tributaryWidth
@@ -214,8 +214,12 @@ export function extractReactions(
       // Local forces at this end
       const fLoc = forces.slice(offset, offset + 6)
 
-      // Transform to global
-      const ax  = el.localAxis
+      // Transform to global (fall back to identity if localAxis absent)
+      const ax  = el.localAxis ?? {
+        x: [1, 0, 0] as [number,number,number],
+        y: [0, 1, 0] as [number,number,number],
+        z: [0, 0, 1] as [number,number,number],
+      }
       const T3  = [ax.x, ax.y, ax.z]  // 3×3 rotation
 
       Fx += T3[0][0] * fLoc[0] + T3[1][0] * fLoc[1] + T3[2][0] * fLoc[2]
@@ -441,7 +445,7 @@ function estimateBeamUDL(beam: any, project: CivilOSProject): number {
   const DLfactor = 1.2
   const LLfactor = 1.6
   const w = DLfactor * (
-    project.loads.deadLoad.superimposedDL * trib +
+    (project.loads.deadLoad.superimposedDL ?? project.loads.deadLoad.deadLoad ?? 0) * trib +
     (project.loads.deadLoad.wallLoad ?? 0)
   ) + LLfactor * project.loads.liveLoad.liveLoad * trib
   return w / 1000  // kN/m → N/mm
