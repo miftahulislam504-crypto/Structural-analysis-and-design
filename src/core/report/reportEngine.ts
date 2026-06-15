@@ -1,2 +1,3 @@
-// Re-export from canonical location (core/reports)
-export * from '../reports/reportEngine'
+// Re-export values and types from canonical location
+export { assembleReport } from '../reports/reportEngine'
+export type { ReportDocument, ReportType, ReportContent, ReportSection } from '../reports/reportEngine'
