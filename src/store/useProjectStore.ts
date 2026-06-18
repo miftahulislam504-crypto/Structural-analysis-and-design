@@ -292,9 +292,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   loadProject: async (id) => {
     set({ isLoading: true, error: null })
     try {
-      const snap = await getDoc(doc(db, 'projects', id))
+      // Structural data lives in subcollection to avoid overwriting Hub's project doc
+      const snap = await getDoc(doc(db, 'projects', id, 'structuralData', 'civp'))
       if (!snap.exists()) {
-        set({ error: 'প্রজেক্ট পাওয়া যায়নি', isLoading: false })
+        set({ error: 'স্ট্রাকচারাল ডেটা পাওয়া যায়নি', isLoading: false })
         return
       }
       const data = snap.data() as CivilOSProject
@@ -310,7 +311,9 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     set({ isSaving: true })
     try {
       const updated = { ...project, meta: { ...project.meta, updatedAt: now() } }
-      await setDoc(doc(db, 'projects', project.id), updated)
+      // Save structural data to subcollection — preserves Hub's root project document
+      // Path: projects/{hubProjectId}/structuralData/civp
+      await setDoc(doc(db, 'projects', project.id, 'structuralData', 'civp'), updated)
       set({ project: updated, isSaving: false, isDirty: false })
     } catch (e: any) {
       console.error('Save failed:', e)
@@ -321,20 +324,40 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   loadProjectList: async (uid) => {
     set({ isLoading: true })
     try {
-      const q     = query(collection(db, 'projects'), where('meta.createdBy', '==', uid))
+      // Query Hub's projects collection filtered by the current user
+      // then check which ones have structural data
+      const q     = query(collection(db, 'projects'), where('createdBy', '==', uid))
       const snaps = await getDocs(q)
-      const list: ProjectSummary[] = snaps.docs.map(d => {
-        const p = d.data() as CivilOSProject
-        return {
-          id:        p.id,
-          name:      p.meta.name,
-          status:    p.meta.status,
-          updatedAt: p.meta.updatedAt,
-          projectNo: p.meta.projectNo,
-          engineer:  p.meta.engineer,
-        }
-      }).sort((a, b) => b.updatedAt - a.updatedAt)
 
+      const list: ProjectSummary[] = []
+      for (const d of snaps.docs) {
+        // Check if structural data exists for this Hub project
+        const structSnap = await getDoc(doc(db, 'projects', d.id, 'structuralData', 'civp'))
+        if (structSnap.exists()) {
+          const p = structSnap.data() as CivilOSProject
+          list.push({
+            id:        p.id,
+            name:      p.meta.name,
+            status:    p.meta.status,
+            updatedAt: p.meta.updatedAt,
+            projectNo: p.meta.projectNo,
+            engineer:  p.meta.engineer,
+          })
+        } else {
+          // Hub project exists but no structural data yet — still show it
+          const hubData = d.data()
+          list.push({
+            id:        d.id,
+            name:      hubData.projectName ?? hubData.name ?? 'Unnamed Project',
+            status:    'draft',
+            updatedAt: Date.now(),
+            projectNo: hubData.projectCode ?? '',
+            engineer:  '',
+          })
+        }
+      }
+
+      list.sort((a, b) => b.updatedAt - a.updatedAt)
       set({ projectList: list, isLoading: false })
     } catch (e: any) {
       set({ error: `তালিকা লোড ব্যর্থ: ${e.message}`, isLoading: false })
