@@ -53,7 +53,7 @@ export default function ProjectPage() {
   const ActiveComponent = MODULE_MAP[activeModule] ?? DashboardModule
 
   return (
-    <div className="flex h-screen bg-[#0a0f1e] overflow-hidden">
+    <div className="flex h-screen bg-[#ffffff] overflow-hidden">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar />
@@ -64,14 +64,14 @@ export default function ProjectPage() {
 }
 
 function PlaceholderModule({ title, phase }: { title: string; phase: number }) {
-  const colors = ['#ef4444','#f97316','#eab308','#22c55e','#06b6d4','#3b82f6','#8b5cf6','#ec4899']
+  const colors = ['#dc2626','#d97706','#d97706','#059669','#0891b2','#1a56db','#7c3aed','#ec4899']
   const color  = colors[phase % colors.length]
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
       <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-6 border"
         style={{ background: color+'15', borderColor: color+'40' }}>🔧</div>
-      <h2 className="text-slate-200 font-mono font-bold text-xl mb-2">{title}</h2>
-      <p className="text-slate-500 font-mono text-sm mb-4">Phase {phase}-এ আসছে</p>
+      <h2 className="text-gray-800 font-mono font-bold text-xl mb-2">{title}</h2>
+      <p className="text-gray-500 font-mono text-sm mb-4">Coming in Phase {phase}</p>
       <div className="px-4 py-2 rounded-full text-xs font-mono border"
         style={{ color, borderColor: color+'40', background: color+'10' }}>
         PHASE {phase} — UPCOMING
@@ -82,10 +82,10 @@ function PlaceholderModule({ title, phase }: { title: string; phase: number }) {
 
 function LoadingScreen() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#0a0f1e]">
+    <div className="flex items-center justify-center min-h-screen bg-[#ffffff]">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-2xl font-black">C</div>
-        <p className="text-slate-500 font-mono text-sm">প্রজেক্ট লোড হচ্ছে...</p>
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white text-2xl font-black">C</div>
+        <p className="text-gray-500 font-mono text-sm">Loading project...</p>
       </div>
     </div>
   )
@@ -93,11 +93,11 @@ function LoadingScreen() {
 
 function ErrorScreen({ error, onBack }: { error: string; onBack: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0f1e] gap-4">
-      <div className="text-red-400 font-mono text-sm">⚠ {error}</div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#ffffff] gap-4">
+      <div className="text-red-600 font-mono text-sm">⚠ {error}</div>
       <button onClick={onBack}
-        className="px-6 py-2 rounded-lg border border-[#1e2d4a] text-slate-400 font-mono text-sm hover:border-red-500/50 hover:text-red-400 transition-all">
-        ← ড্যাশবোর্ডে ফিরে যান
+        className="px-6 py-2 rounded-lg border border-[#e5e7eb] text-gray-600 font-mono text-sm hover:border-red-500/50 hover:text-red-600 transition-all">
+        ← Back to Dashboard
       </button>
     </div>
   )

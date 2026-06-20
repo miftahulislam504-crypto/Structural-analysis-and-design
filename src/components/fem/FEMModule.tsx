@@ -71,7 +71,7 @@ export default function FEMModule() {
 
   function runSlab() {
     if (!project) return
-    if (!slabConfig.slabId) { setError('একটি Slab বেছে নিন'); return }
+    if (!slabConfig.slabId) { setError('Please select a Slab'); return }
     setFemStatus('meshing')
     setError(null)
     try {
@@ -87,7 +87,7 @@ export default function FEMModule() {
 
   function runRaft() {
     if (!project) return
-    if (!raftConfig.foundationId) { setError('একটি Foundation বেছে নিন'); return }
+    if (!raftConfig.foundationId) { setError('Please select a Foundation'); return }
     setFemStatus('solving')
     setError(null)
     try {
@@ -117,15 +117,15 @@ export default function FEMModule() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#0a0f1e] overflow-hidden">
+    <div className="flex flex-col h-full bg-[#ffffff] overflow-hidden">
       {/* Header */}
-      <div className="border-b border-[#1e2d4a] px-6 py-4 flex items-center justify-between">
+      <div className="border-b border-[#e5e7eb] px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="text-slate-200 font-mono font-bold text-lg flex items-center gap-2">
-            <span className="text-purple-400">🔬</span> Advanced FEM Engine
-            <span className="text-xs font-normal text-slate-600 ml-2">Phase 15</span>
+          <h1 className="text-gray-800 font-mono font-bold text-lg flex items-center gap-2">
+            <span className="text-purple-600">🔬</span> Advanced FEM Engine
+            <span className="text-xs font-normal text-gray-500 ml-2">Phase 15</span>
           </h1>
-          <p className="text-slate-500 font-mono text-xs mt-0.5">
+          <p className="text-gray-500 font-mono text-xs mt-0.5">
             Plate/Shell FEM · Raft SSI · P-Delta Analysis · Punching · Nonlinear
           </p>
         </div>
@@ -133,7 +133,7 @@ export default function FEMModule() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#1e2d4a]">
+      <div className="flex border-b border-[#e5e7eb]">
         {([
           { id: 'slab',    label: 'Slab FEM',    icon: '▦' },
           { id: 'raft',    label: 'Raft FEM',    icon: '⬛' },
@@ -145,8 +145,8 @@ export default function FEMModule() {
             onClick={() => setActiveTab(t.id)}
             className={`px-4 py-3 font-mono text-xs border-b-2 transition-all flex items-center gap-2 ${
               activeTab === t.id
-                ? 'border-purple-500 text-purple-400 bg-purple-500/5'
-                : 'border-transparent text-slate-500 hover:text-slate-300'
+                ? 'border-purple-500 text-purple-600 bg-purple-500/5'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
             <span>{t.icon}</span> {t.label}
@@ -159,7 +159,7 @@ export default function FEMModule() {
 
       {/* Error */}
       {error && (
-        <div className="mx-6 mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 font-mono text-xs">
+        <div className="mx-6 mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 font-mono text-xs">
           ⚠ {error}
         </div>
       )}
@@ -195,13 +195,13 @@ function SlabFEMPanel({ config, setConfig, project, onRun, status }: {
   return (
     <div className="max-w-2xl space-y-6">
       <InfoBox
-        title="Slab FEM বিশ্লেষণ"
-        desc="Q4 Mindlin-Reissner plate elements দিয়ে slab deflection, moment, shear এবং punching check।"
+        title="Slab FEM Analysis"
+        desc="Slab deflection, moment, shear, and punching check using Q4 Mindlin-Reissner plate elements."
         color="purple"
       />
 
       {/* Slab Select */}
-      <ConfigSection title="Slab নির্বাচন">
+      <ConfigSection title="Select Slab">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label>Slab</Label>
@@ -209,7 +209,7 @@ function SlabFEMPanel({ config, setConfig, project, onRun, status }: {
               value={config.slabId}
               onChange={v => setConfig({ ...config, slabId: v })}
               options={slabs.map((s: any) => ({ value: s.id, label: s.label }))}
-              placeholder="-- Slab বেছে নিন --"
+              placeholder="-- Select Slab --"
             />
           </div>
           <div>
@@ -228,7 +228,7 @@ function SlabFEMPanel({ config, setConfig, project, onRun, status }: {
       </ConfigSection>
 
       {/* Mesh Config */}
-      <ConfigSection title="Mesh সেটিং">
+      <ConfigSection title="Mesh Settings">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label>Mesh Size (mm)</Label>
@@ -237,7 +237,7 @@ function SlabFEMPanel({ config, setConfig, project, onRun, status }: {
               onChange={v => setConfig({ ...config, meshSize: v })}
               min={100} max={1000} step={50}
             />
-            <p className="text-slate-600 font-mono text-xs mt-1">ছোট = বেশি নির্ভুল (ধীর)</p>
+            <p className="text-gray-500 font-mono text-xs mt-1">Smaller = more accurate (slower)</p>
           </div>
           <div>
             <Label>Punching Check</Label>
@@ -246,7 +246,7 @@ function SlabFEMPanel({ config, setConfig, project, onRun, status }: {
                 checked={config.checkPunching}
                 onChange={v => setConfig({ ...config, checkPunching: v })}
               />
-              <span className="text-slate-400 font-mono text-xs">ACI 318-19 §22.6</span>
+              <span className="text-gray-600 font-mono text-xs">ACI 318-19 §22.6</span>
             </div>
           </div>
         </div>
@@ -254,8 +254,8 @@ function SlabFEMPanel({ config, setConfig, project, onRun, status }: {
 
       {/* Column Selection for Punching */}
       {config.checkPunching && (
-        <ConfigSection title="Punching Check — Column নির্বাচন">
-          <p className="text-slate-500 font-mono text-xs mb-3">যে column-এর কাছে punching check করতে চান:</p>
+        <ConfigSection title="Punching Check — Select Columns">
+          <p className="text-gray-500 font-mono text-xs mb-3">Select the columns near which to perform punching check:</p>
           <div className="grid grid-cols-3 gap-2 max-h-40 overflow-y-auto">
             {columns.map((col: any) => (
               <button
@@ -268,8 +268,8 @@ function SlabFEMPanel({ config, setConfig, project, onRun, status }: {
                 }}
                 className={`px-2 py-1.5 rounded font-mono text-xs border transition-all text-left ${
                   config.columnIds.includes(col.id)
-                    ? 'border-purple-500/50 bg-purple-500/10 text-purple-400'
-                    : 'border-[#1e2d4a] text-slate-500 hover:text-slate-300'
+                    ? 'border-purple-500/50 bg-purple-500/10 text-purple-600'
+                    : 'border-[#e5e7eb] text-gray-500 hover:text-gray-700'
                 }`}
               >
                 {col.label}
@@ -277,12 +277,12 @@ function SlabFEMPanel({ config, setConfig, project, onRun, status }: {
             ))}
           </div>
           {columns.length === 0 && (
-            <p className="text-slate-600 font-mono text-xs">কোনো column পাওয়া যায়নি — Modeling module-এ column যোগ করুন।</p>
+            <p className="text-gray-500 font-mono text-xs">No columns found — add columns in the Modeling module.</p>
           )}
         </ConfigSection>
       )}
 
-      <RunButton onRun={onRun} isRunning={isRunning} label="Slab FEM চালাও" color="purple" />
+      <RunButton onRun={onRun} isRunning={isRunning} label="Run Slab FEM" color="purple" />
     </div>
   )
 }
@@ -313,11 +313,11 @@ function RaftFEMPanel({ config, setConfig, project, onRun, status }: {
     <div className="max-w-2xl space-y-6">
       <InfoBox
         title="Raft Foundation FEM"
-        desc="Winkler spring model দিয়ে soil-structure interaction। Raft deflection, moment এবং soil pressure।"
+        desc="Soil-structure interaction using the Winkler spring model. Raft deflection, moment, and soil pressure."
         color="blue"
       />
 
-      <ConfigSection title="Foundation নির্বাচন">
+      <ConfigSection title="Select Foundation">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label>Raft Foundation</Label>
@@ -325,11 +325,11 @@ function RaftFEMPanel({ config, setConfig, project, onRun, status }: {
               value={config.foundationId}
               onChange={v => setConfig({ ...config, foundationId: v })}
               options={foundations.map((f: any) => ({ value: f.id, label: f.label }))}
-              placeholder="-- Raft বেছে নিন --"
+              placeholder="-- Select Raft --"
             />
             {foundations.length === 0 && (
               <p className="text-yellow-500/70 font-mono text-xs mt-1">
-                ⚠ Project Setup-এ Raft foundation যোগ করুন
+                ⚠ Add a Raft foundation in Project Setup
               </p>
             )}
           </div>
@@ -349,8 +349,8 @@ function RaftFEMPanel({ config, setConfig, project, onRun, status }: {
               onClick={() => setConfig({ ...config, soilModulus: s.value })}
               className={`px-2 py-1.5 rounded font-mono text-xs border transition-all text-center ${
                 config.soilModulus === s.value
-                  ? 'border-blue-500/50 bg-blue-500/10 text-blue-400'
-                  : 'border-[#1e2d4a] text-slate-500 hover:text-slate-300'
+                  ? 'border-blue-500/50 bg-blue-500/10 text-blue-600'
+                  : 'border-[#e5e7eb] text-gray-500 hover:text-gray-700'
               }`}
             >
               {s.label}
@@ -362,21 +362,21 @@ function RaftFEMPanel({ config, setConfig, project, onRun, status }: {
           onChange={v => setConfig({ ...config, soilModulus: v })}
           min={5000} max={500000} step={1000}
         />
-        <p className="text-slate-600 font-mono text-xs mt-1">
-          Bangladesh soft soil: 12,000–24,000 kN/m³ প্রায়ই ব্যবহার হয়
+        <p className="text-gray-500 font-mono text-xs mt-1">
+          Bangladesh soft soil: 12,000–24,000 kN/m³ is commonly used
         </p>
       </ConfigSection>
 
-      <div className="p-4 rounded-lg border border-[#1e2d4a] bg-[#0d1526]">
-        <p className="text-slate-400 font-mono text-xs font-semibold mb-2">Settlement Limits (BNBC)</p>
+      <div className="p-4 rounded-lg border border-[#e5e7eb] bg-[#f9fafb]">
+        <p className="text-gray-600 font-mono text-xs font-semibold mb-2">Settlement Limits (BNBC)</p>
         <div className="grid grid-cols-3 gap-4 text-xs font-mono">
-          <div><span className="text-slate-600">Max Total:</span> <span className="text-slate-300">25 mm</span></div>
-          <div><span className="text-slate-600">Differential:</span> <span className="text-slate-300">20 mm</span></div>
-          <div><span className="text-slate-600">Angular:</span> <span className="text-slate-300">1/500</span></div>
+          <div><span className="text-gray-500">Max Total:</span> <span className="text-gray-700">25 mm</span></div>
+          <div><span className="text-gray-500">Differential:</span> <span className="text-gray-700">20 mm</span></div>
+          <div><span className="text-gray-500">Angular:</span> <span className="text-gray-700">1/500</span></div>
         </div>
       </div>
 
-      <RunButton onRun={onRun} isRunning={isRunning} label="Raft FEM চালাও" color="blue" />
+      <RunButton onRun={onRun} isRunning={isRunning} label="Run Raft FEM" color="blue" />
     </div>
   )
 }
@@ -397,16 +397,16 @@ function PDeltaPanel({ config, setConfig, onRun, status }: {
     <div className="max-w-2xl space-y-6">
       <InfoBox
         title="P-Delta Analysis (Geometric Nonlinearity)"
-        desc="Story drift-এর উপর axial load-এর second-order effect। BNBC §2.3.4 / AISC 360 Appendix 8 — B₂ amplification factor।"
+        desc="Second-order effect of axial load on story drift. BNBC §2.3.4 / AISC 360 Appendix 8 — B₂ amplification factor."
         color="orange"
       />
 
       <div className="p-4 rounded-lg border border-orange-500/20 bg-orange-500/5">
-        <p className="text-orange-400 font-mono text-xs font-semibold mb-2">📋 Prerequisites</p>
-        <ul className="space-y-1 text-slate-500 font-mono text-xs">
-          <li>✓ Phase 4 — DSM Analysis সম্পন্ন হতে হবে</li>
-          <li>✓ Phase 5 — Seismic/Wind loads সম্পন্ন হতে হবে</li>
-          <li className="text-slate-400">→ B₂ = 1 / (1 − θ) যেখানে θ = ΣPu·Δ / (H·L)</li>
+        <p className="text-orange-600 font-mono text-xs font-semibold mb-2">📋 Prerequisites</p>
+        <ul className="space-y-1 text-gray-500 font-mono text-xs">
+          <li>✓ Phase 4 — DSM Analysis must be completed</li>
+          <li>✓ Phase 5 — Seismic/Wind loads must be completed</li>
+          <li className="text-gray-600">→ B₂ = 1 / (1 − θ) where θ = ΣPu·Δ / (H·L)</li>
         </ul>
       </div>
 
@@ -435,16 +435,16 @@ function PDeltaPanel({ config, setConfig, onRun, status }: {
         </div>
       </ConfigSection>
 
-      <div className="p-4 rounded-lg border border-[#1e2d4a] bg-[#0d1526]">
-        <p className="text-slate-400 font-mono text-xs font-semibold mb-2">Stability Ratio θ Reference</p>
+      <div className="p-4 rounded-lg border border-[#e5e7eb] bg-[#f9fafb]">
+        <p className="text-gray-600 font-mono text-xs font-semibold mb-2">Stability Ratio θ Reference</p>
         <div className="space-y-1 text-xs font-mono">
-          <div className="flex justify-between"><span className="text-slate-600">θ ≤ 0.10</span><span className="text-green-400">P-Delta negligible — skip</span></div>
-          <div className="flex justify-between"><span className="text-slate-600">0.10 &lt; θ ≤ 0.60</span><span className="text-yellow-400">P-Delta significant — use B₂</span></div>
-          <div className="flex justify-between"><span className="text-slate-600">θ &gt; 0.60</span><span className="text-red-400">Structure unstable!</span></div>
+          <div className="flex justify-between"><span className="text-gray-500">θ ≤ 0.10</span><span className="text-emerald-600">P-Delta negligible — skip</span></div>
+          <div className="flex justify-between"><span className="text-gray-500">0.10 &lt; θ ≤ 0.60</span><span className="text-amber-600">P-Delta significant — use B₂</span></div>
+          <div className="flex justify-between"><span className="text-gray-500">θ &gt; 0.60</span><span className="text-red-600">Structure unstable!</span></div>
         </div>
       </div>
 
-      <RunButton onRun={onRun} isRunning={isRunning} label="P-Delta Analysis চালাও" color="orange" />
+      <RunButton onRun={onRun} isRunning={isRunning} label="Run P-Delta Analysis" color="orange" />
     </div>
   )
 }
@@ -462,8 +462,8 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-center">
         <div className="text-5xl mb-4">📊</div>
-        <p className="text-slate-500 font-mono text-sm">এখনো কোনো analysis চালানো হয়নি।</p>
-        <p className="text-slate-600 font-mono text-xs mt-1">Slab FEM, Raft FEM বা P-Delta চালান।</p>
+        <p className="text-gray-500 font-mono text-sm">No analysis has been run yet.</p>
+        <p className="text-gray-500 font-mono text-xs mt-1">Run Slab FEM, Raft FEM, or P-Delta.</p>
       </div>
     )
   }
@@ -473,8 +473,8 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
       {/* Slab Results */}
       {slabResult && (
         <section>
-          <h2 className="text-slate-300 font-mono font-bold text-sm mb-4 flex items-center gap-2">
-            <span className="text-purple-400">▦</span> Slab FEM Results
+          <h2 className="text-gray-700 font-mono font-bold text-sm mb-4 flex items-center gap-2">
+            <span className="text-purple-600">▦</span> Slab FEM Results
           </h2>
 
           {/* Key metrics */}
@@ -488,25 +488,25 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
           {/* Punching Details */}
           {slabResult.punchingChecks.length > 0 && (
             <div className="mb-6">
-              <p className="text-slate-500 font-mono text-xs font-semibold mb-2">Punching Shear — ACI 318-19 §22.6</p>
+              <p className="text-gray-500 font-mono text-xs font-semibold mb-2">Punching Shear — ACI 318-19 §22.6</p>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs font-mono border-collapse">
                   <thead>
-                    <tr className="border-b border-[#1e2d4a]">
+                    <tr className="border-b border-[#e5e7eb]">
                       {['Col #', 'bo (mm)', 'd (mm)', 'Vu (kN)', 'φVc (kN)', 'Ratio', 'Status'].map(h => (
-                        <th key={h} className="text-left px-3 py-2 text-slate-600">{h}</th>
+                        <th key={h} className="text-left px-3 py-2 text-gray-500">{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {slabResult.punchingChecks.map((p, i) => (
-                      <tr key={i} className="border-b border-[#1e2d4a]/50">
-                        <td className="px-3 py-2 text-slate-400">C{i + 1}</td>
-                        <td className="px-3 py-2 text-slate-400">{p.bo.toFixed(0)}</td>
-                        <td className="px-3 py-2 text-slate-400">{p.d.toFixed(0)}</td>
-                        <td className="px-3 py-2 text-slate-400">{p.Vu.toFixed(1)}</td>
-                        <td className="px-3 py-2 text-slate-400">{p.phiVc.toFixed(1)}</td>
-                        <td className="px-3 py-2 text-slate-400">{p.ratio.toFixed(3)}</td>
+                      <tr key={i} className="border-b border-[#e5e7eb]/50">
+                        <td className="px-3 py-2 text-gray-600">C{i + 1}</td>
+                        <td className="px-3 py-2 text-gray-600">{p.bo.toFixed(0)}</td>
+                        <td className="px-3 py-2 text-gray-600">{p.d.toFixed(0)}</td>
+                        <td className="px-3 py-2 text-gray-600">{p.Vu.toFixed(1)}</td>
+                        <td className="px-3 py-2 text-gray-600">{p.phiVc.toFixed(1)}</td>
+                        <td className="px-3 py-2 text-gray-600">{p.ratio.toFixed(3)}</td>
                         <td className="px-3 py-2">
                           <StatusBadgeSmall status={p.status} />
                         </td>
@@ -516,7 +516,7 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
                 </table>
               </div>
               {slabResult.punchingChecks.filter(p => p.recommendation).map((p, i) => (
-                <div key={i} className="mt-2 p-2 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-mono">
+                <div key={i} className="mt-2 p-2 rounded bg-red-500/10 border border-red-500/20 text-red-600 text-xs font-mono">
                   💡 {p.recommendation}
                 </div>
               ))}
@@ -525,7 +525,7 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
 
           {/* Cracking */}
           <div>
-            <p className="text-slate-500 font-mono text-xs font-semibold mb-2">Material Nonlinearity — Cracking Check</p>
+            <p className="text-gray-500 font-mono text-xs font-semibold mb-2">Material Nonlinearity — Cracking Check</p>
             <div className="grid grid-cols-3 gap-3">
               <StatBox label="Total Elements" value={slabResult.nonlinearCheck.length.toString()} />
               <StatBox label="Cracked" value={slabResult.nonlinearCheck.filter(r => r.cracked).length.toString()} color="yellow" />
@@ -542,8 +542,8 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
       {/* Raft Results */}
       {raftResult && (
         <section>
-          <h2 className="text-slate-300 font-mono font-bold text-sm mb-4 flex items-center gap-2">
-            <span className="text-blue-400">⬛</span> Raft FEM Results
+          <h2 className="text-gray-700 font-mono font-bold text-sm mb-4 flex items-center gap-2">
+            <span className="text-blue-600">⬛</span> Raft FEM Results
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <MetricCard label="Max Soil Pressure" value={`${raftResult.maxSoilPressure.toFixed(1)} kN/m²`} sub={`Allowable: ${raftResult.allowablePressure} kN/m²`} status={raftResult.bearingStatus} />
@@ -551,8 +551,8 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
             <MetricCard label="Max Deflection" value={`${raftResult.femResults.maxDeflection.toFixed(1)} mm`} status="info" />
             <MetricCard label="Max Mx" value={`${raftResult.femResults.maxMomentMx.toFixed(1)} kN·m/m`} status="info" />
           </div>
-          <div className="p-3 rounded-lg border border-[#1e2d4a] bg-[#0d1526]">
-            <p className="text-slate-500 font-mono text-xs">
+          <div className="p-3 rounded-lg border border-[#e5e7eb] bg-[#f9fafb]">
+            <p className="text-gray-500 font-mono text-xs">
               Raft maximum settlement: {raftResult.femResults.maxDeflection.toFixed(1)} mm |
               Max Mxy: {raftResult.femResults.maxMomentMxy.toFixed(2)} kN·m/m
             </p>
@@ -563,8 +563,8 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
       {/* P-Delta Results */}
       {pdeltaResult && (
         <section>
-          <h2 className="text-slate-300 font-mono font-bold text-sm mb-4 flex items-center gap-2">
-            <span className="text-orange-400">△</span> P-Delta Results
+          <h2 className="text-gray-700 font-mono font-bold text-sm mb-4 flex items-center gap-2">
+            <span className="text-orange-600">△</span> P-Delta Results
           </h2>
           <div className="grid grid-cols-3 gap-3 mb-4">
             <MetricCard label="B₂ Amplification" value={pdeltaResult.amplificationFactor.toFixed(3)} sub="max across stories" status={pdeltaResult.amplificationFactor < 1.5 ? 'PASS' : 'FAIL'} />
@@ -576,23 +576,23 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
             <div className="overflow-x-auto mb-4">
               <table className="w-full text-xs font-mono border-collapse">
                 <thead>
-                  <tr className="border-b border-[#1e2d4a]">
+                  <tr className="border-b border-[#e5e7eb]">
                     {['Story', 'Δ₁st Order (mm)', 'Δ P-Delta (mm)', 'Amplification'].map(h => (
-                      <th key={h} className="text-left px-3 py-2 text-slate-600">{h}</th>
+                      <th key={h} className="text-left px-3 py-2 text-gray-500">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {pdeltaResult.storyDrifts.map(s => (
-                    <tr key={s.storyId} className="border-b border-[#1e2d4a]/50">
-                      <td className="px-3 py-2 text-slate-400">{s.storyId}</td>
-                      <td className="px-3 py-2 text-slate-400">{s.drift.toFixed(3)}</td>
-                      <td className="px-3 py-2 text-slate-400">{s.driftAmplified.toFixed(3)}</td>
+                    <tr key={s.storyId} className="border-b border-[#e5e7eb]/50">
+                      <td className="px-3 py-2 text-gray-600">{s.storyId}</td>
+                      <td className="px-3 py-2 text-gray-600">{s.drift.toFixed(3)}</td>
+                      <td className="px-3 py-2 text-gray-600">{s.driftAmplified.toFixed(3)}</td>
                       <td className="px-3 py-2">
                         <span className={`px-2 py-0.5 rounded text-xs ${
                           s.driftAmplified / (s.drift || 1) > 1.2
-                            ? 'bg-red-500/20 text-red-400'
-                            : 'bg-green-500/20 text-green-400'
+                            ? 'bg-red-500/20 text-red-600'
+                            : 'bg-green-500/20 text-emerald-600'
                         }`}>
                           ×{(s.driftAmplified / (s.drift || 1)).toFixed(2)}
                         </span>
@@ -607,7 +607,7 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
           {pdeltaResult.errorLog.length > 0 && (
             <div className="space-y-1">
               {pdeltaResult.errorLog.map((msg, i) => (
-                <div key={i} className="p-2 rounded bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-mono">
+                <div key={i} className="p-2 rounded bg-yellow-500/10 border border-yellow-500/20 text-amber-600 text-xs font-mono">
                   ⚠ {msg}
                 </div>
               ))}
@@ -625,14 +625,14 @@ function ResultsPanel({ slabResult, raftResult, pdeltaResult }: {
 
 function InfoBox({ title, desc, color }: { title: string; desc: string; color: string }) {
   const colors: Record<string, string> = {
-    purple: 'border-purple-500/20 bg-purple-500/5 text-purple-400',
-    blue:   'border-blue-500/20 bg-blue-500/5 text-blue-400',
-    orange: 'border-orange-500/20 bg-orange-500/5 text-orange-400',
+    purple: 'border-purple-500/20 bg-purple-500/5 text-purple-600',
+    blue:   'border-blue-500/20 bg-blue-500/5 text-blue-600',
+    orange: 'border-orange-500/20 bg-orange-500/5 text-orange-600',
   }
   return (
     <div className={`p-4 rounded-lg border ${colors[color]}`}>
       <p className="font-mono font-semibold text-sm mb-1">{title}</p>
-      <p className="text-slate-400 font-mono text-xs">{desc}</p>
+      <p className="text-gray-600 font-mono text-xs">{desc}</p>
     </div>
   )
 }
@@ -640,8 +640,8 @@ function InfoBox({ title, desc, color }: { title: string; desc: string; color: s
 function ConfigSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="text-slate-400 font-mono text-xs font-semibold mb-3 uppercase tracking-wider">{title}</p>
-      <div className="p-4 rounded-lg border border-[#1e2d4a] bg-[#0d1526] space-y-4">
+      <p className="text-gray-600 font-mono text-xs font-semibold mb-3 uppercase tracking-wider">{title}</p>
+      <div className="p-4 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] space-y-4">
         {children}
       </div>
     </div>
@@ -649,7 +649,7 @@ function ConfigSection({ title, children }: { title: string; children: React.Rea
 }
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <p className="text-slate-500 font-mono text-xs mb-1.5">{children}</p>
+  return <p className="text-gray-500 font-mono text-xs mb-1.5">{children}</p>
 }
 
 function Select({ value, onChange, options, placeholder }: {
@@ -662,7 +662,7 @@ function Select({ value, onChange, options, placeholder }: {
     <select
       value={value}
       onChange={e => onChange(e.target.value)}
-      className="w-full bg-[#0a0f1e] border border-[#1e2d4a] rounded-lg px-3 py-2 text-slate-300 font-mono text-xs focus:outline-none focus:border-purple-500/50"
+      className="w-full bg-[#ffffff] border border-[#e5e7eb] rounded-lg px-3 py-2 text-gray-700 font-mono text-xs focus:outline-none focus:border-purple-500/50"
     >
       {placeholder && <option value="">{placeholder}</option>}
       {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -680,7 +680,7 @@ function NumberInput({ value, onChange, min, max, step }: {
       value={value}
       min={min} max={max} step={step}
       onChange={e => onChange(Number(e.target.value))}
-      className="w-full bg-[#0a0f1e] border border-[#1e2d4a] rounded-lg px-3 py-2 text-slate-300 font-mono text-xs focus:outline-none focus:border-purple-500/50"
+      className="w-full bg-[#ffffff] border border-[#e5e7eb] rounded-lg px-3 py-2 text-gray-700 font-mono text-xs focus:outline-none focus:border-purple-500/50"
     />
   )
 }
@@ -689,7 +689,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
   return (
     <button
       onClick={() => onChange(!checked)}
-      className={`w-10 h-5 rounded-full transition-all relative ${checked ? 'bg-purple-500' : 'bg-[#1e2d4a]'}`}
+      className={`w-10 h-5 rounded-full transition-all relative ${checked ? 'bg-purple-500' : 'bg-[#e5e7eb]'}`}
     >
       <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-all ${checked ? 'left-5' : 'left-1'}`} />
     </button>
@@ -700,9 +700,9 @@ function RunButton({ onRun, isRunning, label, color }: {
   onRun: () => void; isRunning: boolean; label: string; color: string
 }) {
   const colors: Record<string, string> = {
-    purple: 'bg-purple-500/20 border-purple-500/30 text-purple-400 hover:bg-purple-500/30',
-    blue:   'bg-blue-500/20 border-blue-500/30 text-blue-400 hover:bg-blue-500/30',
-    orange: 'bg-orange-500/20 border-orange-500/30 text-orange-400 hover:bg-orange-500/30',
+    purple: 'bg-purple-500/20 border-purple-500/30 text-purple-600 hover:bg-purple-500/30',
+    blue:   'bg-blue-500/20 border-blue-500/30 text-blue-600 hover:bg-blue-500/30',
+    orange: 'bg-orange-500/20 border-orange-500/30 text-orange-600 hover:bg-orange-500/30',
   }
   return (
     <button
@@ -712,7 +712,7 @@ function RunButton({ onRun, isRunning, label, color }: {
     >
       {isRunning ? (
         <span className="flex items-center justify-center gap-2">
-          <span className="animate-spin">⟳</span> বিশ্লেষণ চলছে...
+          <span className="animate-spin">⟳</span> Analysis running...
         </span>
       ) : (
         `▶ ${label}`
@@ -723,11 +723,11 @@ function RunButton({ onRun, isRunning, label, color }: {
 
 function StatusBadge({ status }: { status: FEMStatus }) {
   const map: Record<FEMStatus, { label: string; color: string }> = {
-    idle:    { label: 'Ready',    color: 'text-slate-500 border-slate-700' },
-    meshing: { label: 'Meshing…', color: 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10' },
-    solving: { label: 'Solving…', color: 'text-blue-400 border-blue-500/30 bg-blue-500/10' },
-    done:    { label: 'Done ✓',   color: 'text-green-400 border-green-500/30 bg-green-500/10' },
-    error:   { label: 'Error',    color: 'text-red-400 border-red-500/30 bg-red-500/10' },
+    idle:    { label: 'Ready',    color: 'text-gray-500 border-gray-300' },
+    meshing: { label: 'Meshing…', color: 'text-amber-600 border-yellow-500/30 bg-yellow-500/10' },
+    solving: { label: 'Solving…', color: 'text-blue-600 border-blue-500/30 bg-blue-500/10' },
+    done:    { label: 'Done ✓',   color: 'text-emerald-600 border-green-500/30 bg-green-500/10' },
+    error:   { label: 'Error',    color: 'text-red-600 border-red-500/30 bg-red-500/10' },
   }
   const s = map[status]
   return (
@@ -738,7 +738,7 @@ function StatusBadge({ status }: { status: FEMStatus }) {
 function StatusBadgeSmall({ status }: { status: 'PASS' | 'FAIL' }) {
   return (
     <span className={`px-2 py-0.5 rounded text-xs font-mono ${
-      status === 'PASS' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+      status === 'PASS' ? 'bg-green-500/20 text-emerald-600' : 'bg-red-500/20 text-red-600'
     }`}>{status}</span>
   )
 }
@@ -747,22 +747,22 @@ function MetricCard({ label, value, sub, status }: {
   label: string; value: string; sub?: string
   status: 'PASS' | 'FAIL' | 'info'
 }) {
-  const border = status === 'PASS' ? 'border-green-500/20' : status === 'FAIL' ? 'border-red-500/20' : 'border-[#1e2d4a]'
-  const valColor = status === 'PASS' ? 'text-green-400' : status === 'FAIL' ? 'text-red-400' : 'text-slate-200'
+  const border = status === 'PASS' ? 'border-green-500/20' : status === 'FAIL' ? 'border-red-500/20' : 'border-[#e5e7eb]'
+  const valColor = status === 'PASS' ? 'text-emerald-600' : status === 'FAIL' ? 'text-red-600' : 'text-gray-800'
   return (
-    <div className={`p-3 rounded-lg border ${border} bg-[#0d1526]`}>
-      <p className="text-slate-600 font-mono text-xs mb-1">{label}</p>
+    <div className={`p-3 rounded-lg border ${border} bg-[#f9fafb]`}>
+      <p className="text-gray-500 font-mono text-xs mb-1">{label}</p>
       <p className={`font-mono text-sm font-bold ${valColor}`}>{value}</p>
-      {sub && <p className="text-slate-600 font-mono text-xs mt-0.5">{sub}</p>}
+      {sub && <p className="text-gray-500 font-mono text-xs mt-0.5">{sub}</p>}
     </div>
   )
 }
 
 function StatBox({ label, value, color = 'slate' }: { label: string; value: string; color?: string }) {
-  const c = color === 'yellow' ? 'text-yellow-400' : color === 'orange' ? 'text-orange-400' : 'text-slate-300'
+  const c = color === 'yellow' ? 'text-amber-600' : color === 'orange' ? 'text-orange-600' : 'text-gray-700'
   return (
-    <div className="p-3 rounded-lg border border-[#1e2d4a] bg-[#0d1526]">
-      <p className="text-slate-600 font-mono text-xs mb-1">{label}</p>
+    <div className="p-3 rounded-lg border border-[#e5e7eb] bg-[#f9fafb]">
+      <p className="text-gray-500 font-mono text-xs mb-1">{label}</p>
       <p className={`font-mono text-base font-bold ${c}`}>{value}</p>
     </div>
   )
@@ -772,7 +772,7 @@ function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
       <div className="text-5xl mb-4">🔬</div>
-      <p className="text-slate-500 font-mono text-sm">প্রজেক্ট লোড নেই</p>
+      <p className="text-gray-500 font-mono text-sm">No project loaded</p>
     </div>
   )
 }

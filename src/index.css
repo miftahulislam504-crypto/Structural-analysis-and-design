@@ -15,8 +15,8 @@ html {
 }
 
 body {
-  background-color: #0a0f1e;
-  color: #e2e8f0;
+  background-color: #ffffff;
+  color: #111827;
   font-family: 'Inter', system-ui, sans-serif;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -29,14 +29,14 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0f1e;
+  background: #f9fafb;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e2d4a;
+  background: #d1d5db;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #243554;
+  background: #9ca3af;
 }
 
 /* ── Typography ─────────────────────────────────────── */
@@ -46,14 +46,14 @@ body {
 
 /* ── Utility classes ────────────────────────────────── */
 .glass {
-  background: rgba(13, 18, 33, 0.8);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid #1e2d4a;
+  border: 1px solid #e5e7eb;
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #ef4444, #f97316);
+  background: linear-gradient(135deg, #1a56db, #1e429f);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -62,8 +62,8 @@ body {
 .rainbow-bar {
   background: linear-gradient(
     90deg,
-    #ef4444, #f97316, #eab308,
-    #22c55e, #3b82f6, #8b5cf6
+    #dc2626, #d97706, #d97706,
+    #059669, #1a56db, #7c3aed
   );
 }
 
@@ -98,28 +98,31 @@ body {
 /* ── Form inputs ────────────────────────────────────── */
 .input-field {
   width: 100%;
-  background: #080d1a;
-  border: 1px solid #1e2d4a;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 8px 12px;
-  color: #e2e8f0;
+  color: #111827;
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
   outline: none;
 }
-.input-field:focus { border-color: #ef4444; }
-.input-field::placeholder { color: #334155; }
-.input-field[type="number"]::-webkit-inner-spin-button { opacity: 0.3; }
+.input-field:focus {
+  border-color: #1a56db;
+  box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+}
+.input-field::placeholder { color: #9ca3af; }
+.input-field[type="number"]::-webkit-inner-spin-button { opacity: 0.6; }
 
 /* ── Focus styles ───────────────────────────────────── */
 *:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #1a56db;
   outline-offset: 2px;
 }
 
 /* ── Selection ──────────────────────────────────────── */
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
-  color: #f1f5f9;
+  background: rgba(26, 86, 219, 0.15);
+  color: #111827;
 }

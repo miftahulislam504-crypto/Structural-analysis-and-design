@@ -6,12 +6,12 @@ import { generateBBS } from '../../core/bbs/bbsEngine'
 import type { CivilOSProject } from '../../lib/types'
 
 const REPORT_TYPES: { id: ReportType; label: string; icon: string; desc: string; color: string }[] = [
-  { id: 'full',          label: 'Complete Report',      icon: '📋', desc: 'সব section একসাথে',         color: '#ef4444' },
-  { id: 'design_basis',  label: 'Design Basis',         icon: '📐', desc: 'Parameters + Seismic + Wind', color: '#3b82f6' },
-  { id: 'analysis',      label: 'Analysis Report',      icon: '🧮', desc: 'Results + Drifts + Forces',   color: '#8b5cf6' },
-  { id: 'compliance',    label: 'Compliance Report',    icon: '✅', desc: 'BNBC 2020 checks',             color: '#22c55e' },
-  { id: 'member_design', label: 'Member Design',        icon: '🏗', desc: 'Beam/Column/Slab summary',    color: '#f97316' },
-  { id: 'bbs',           label: 'BBS Report',           icon: '🔩', desc: 'Bar Bending Schedule',        color: '#06b6d4' },
+  { id: 'full',          label: 'Complete Report',      icon: '📋', desc: 'All sections together',         color: '#dc2626' },
+  { id: 'design_basis',  label: 'Design Basis',         icon: '📐', desc: 'Parameters + Seismic + Wind', color: '#1a56db' },
+  { id: 'analysis',      label: 'Analysis Report',      icon: '🧮', desc: 'Results + Drifts + Forces',   color: '#7c3aed' },
+  { id: 'compliance',    label: 'Compliance Report',    icon: '✅', desc: 'BNBC 2020 checks',             color: '#059669' },
+  { id: 'member_design', label: 'Member Design',        icon: '🏗', desc: 'Beam/Column/Slab summary',    color: '#d97706' },
+  { id: 'bbs',           label: 'BBS Report',           icon: '🔩', desc: 'Bar Bending Schedule',        color: '#0891b2' },
 ]
 
 type ExportState = 'idle' | 'generating' | 'done' | 'error'
@@ -78,24 +78,24 @@ export default function ReportModule() {
   return (
     <div className="flex h-full overflow-hidden">
       {/* Left panel — controls */}
-      <div className="w-72 border-r border-[#1e2d4a] bg-[#080d1a] flex flex-col shrink-0 overflow-y-auto">
+      <div className="w-72 border-r border-[#e5e7eb] bg-[#ffffff] flex flex-col shrink-0 overflow-y-auto">
         {/* Header */}
-        <div className="px-5 py-5 border-b border-[#1e2d4a]">
-          <div className="h-0.5 rounded mb-4" style={{ background: 'linear-gradient(90deg,#ef4444,#f97316)' }} />
-          <h2 className="text-slate-200 font-mono font-bold text-sm">Report Export</h2>
-          <p className="text-slate-600 font-mono text-xs mt-1">Phase 12 — PDF · DOCX · Excel</p>
+        <div className="px-5 py-5 border-b border-[#e5e7eb]">
+          <div className="h-0.5 rounded mb-4" style={{ background: 'linear-gradient(90deg,#dc2626,#d97706)' }} />
+          <h2 className="text-gray-800 font-mono font-bold text-sm">Report Export</h2>
+          <p className="text-gray-500 font-mono text-xs mt-1">Phase 12 — PDF · DOCX · Excel</p>
         </div>
 
         {/* Report type selector */}
-        <div className="px-4 py-4 border-b border-[#1e2d4a]">
-          <p className="text-slate-600 font-mono text-xs tracking-wider mb-3">REPORT TYPE</p>
+        <div className="px-4 py-4 border-b border-[#e5e7eb]">
+          <p className="text-gray-500 font-mono text-xs tracking-wider mb-3">REPORT TYPE</p>
           <div className="space-y-2">
             {REPORT_TYPES.map(t => (
               <button key={t.id} onClick={() => setSelectedType(t.id)}
                 className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-all ${
                   selectedType === t.id
-                    ? 'text-white'
-                    : 'border-[#1e2d4a] text-slate-500 hover:text-slate-300 hover:border-slate-600'
+                    ? 'text-gray-900'
+                    : 'border-[#e5e7eb] text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
                 style={selectedType === t.id ? {
                   borderColor: t.color + '50',
@@ -107,7 +107,7 @@ export default function ReportModule() {
                     style={{ color: selectedType === t.id ? t.color : undefined }}>
                     {t.label}
                   </div>
-                  <div className="text-xs text-slate-600 font-mono mt-0.5">{t.desc}</div>
+                  <div className="text-xs text-gray-500 font-mono mt-0.5">{t.desc}</div>
                 </div>
               </button>
             ))}
@@ -116,13 +116,13 @@ export default function ReportModule() {
 
         {/* Export buttons */}
         <div className="px-4 py-4 space-y-3">
-          <p className="text-slate-600 font-mono text-xs tracking-wider mb-3">EXPORT FORMAT</p>
+          <p className="text-gray-500 font-mono text-xs tracking-wider mb-3">EXPORT FORMAT</p>
 
           <ExportButton
             icon="📄"
             label="Export PDF"
             sublabel="Professional report"
-            color="#ef4444"
+            color="#dc2626"
             state={pdfState}
             onClick={handlePDF}
           />
@@ -130,7 +130,7 @@ export default function ReportModule() {
             icon="📝"
             label="Export DOCX"
             sublabel="Word document"
-            color="#3b82f6"
+            color="#1a56db"
             state={docxState}
             onClick={handleDOCX}
           />
@@ -138,58 +138,58 @@ export default function ReportModule() {
             icon="📊"
             label="Export BBS Excel"
             sublabel="Bar bending schedule"
-            color="#22c55e"
+            color="#059669"
             state={xlsxState}
             onClick={handleExcel}
           />
         </div>
 
         {/* Document info */}
-        <div className="px-4 py-4 border-t border-[#1e2d4a] mt-auto">
-          <div className="bg-[#0d1221] rounded-xl border border-[#1e2d4a] p-3 space-y-1.5 text-xs font-mono">
-            <div className="text-slate-500">Document Info</div>
-            <div className="flex justify-between text-slate-400">
+        <div className="px-4 py-4 border-t border-[#e5e7eb] mt-auto">
+          <div className="bg-[#f9fafb] rounded-xl border border-[#e5e7eb] p-3 space-y-1.5 text-xs font-mono">
+            <div className="text-gray-500">Document Info</div>
+            <div className="flex justify-between text-gray-600">
               <span>Sections</span>
-              <span className="text-slate-200">{safeDoc.sections.length}</span>
+              <span className="text-gray-800">{safeDoc.sections.length}</span>
             </div>
-            <div className="flex justify-between text-slate-400">
+            <div className="flex justify-between text-gray-600">
               <span>Type</span>
-              <span className="text-slate-200">{REPORT_TYPES.find(t => t.id === selectedType)?.label}</span>
+              <span className="text-gray-800">{REPORT_TYPES.find(t => t.id === selectedType)?.label}</span>
             </div>
-            <div className="flex justify-between text-slate-400">
+            <div className="flex justify-between text-gray-600">
               <span>Project</span>
-              <span className="text-slate-200 truncate max-w-[100px]">{project.meta.projectNo}</span>
+              <span className="text-gray-800 truncate max-w-[100px]">{project.meta.projectNo}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Right panel — preview */}
-      <div className="flex-1 overflow-y-auto bg-[#0a0f1e]">
+      <div className="flex-1 overflow-y-auto bg-[#ffffff]">
         {/* Preview header */}
-        <div className="sticky top-0 z-10 px-6 py-3 bg-[#080d1a] border-b border-[#1e2d4a] flex items-center gap-3">
-          <span className="text-slate-500 font-mono text-xs">PREVIEW</span>
-          <span className="text-slate-300 font-mono text-xs font-semibold">{safeDoc.title}</span>
-          <span className="ml-auto text-slate-600 font-mono text-xs">
+        <div className="sticky top-0 z-10 px-6 py-3 bg-[#ffffff] border-b border-[#e5e7eb] flex items-center gap-3">
+          <span className="text-gray-500 font-mono text-xs">PREVIEW</span>
+          <span className="text-gray-700 font-mono text-xs font-semibold">{safeDoc.title}</span>
+          <span className="ml-auto text-gray-500 font-mono text-xs">
             {new Date(safeDoc.generatedAt).toLocaleTimeString()}
           </span>
         </div>
 
         {/* Cover */}
-        <div className="mx-6 mt-6 rounded-2xl overflow-hidden border border-[#1e2d4a]">
+        <div className="mx-6 mt-6 rounded-2xl overflow-hidden border border-[#e5e7eb]">
           {/* Cover gradient */}
           <div className="relative px-8 py-10 overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #0f172a, #1a1f3a)' }}>
+            style={{ background: 'linear-gradient(135deg, #f9fafb, #f3f4f6)' }}>
             <div className="absolute top-0 left-0 w-2 h-full"
-              style={{ background: 'linear-gradient(180deg,#ef4444,#f97316)' }} />
+              style={{ background: 'linear-gradient(180deg,#dc2626,#d97706)' }} />
             <div className="absolute top-0 left-0 right-0 h-0.5"
-              style={{ background: 'linear-gradient(90deg,#ef4444,#f97316,#eab308,#22c55e,#3b82f6,#8b5cf6)' }} />
+              style={{ background: 'linear-gradient(90deg,#dc2626,#d97706,#d97706,#059669,#1a56db,#7c3aed)' }} />
 
-            <div className="text-xs font-mono text-slate-500 mb-2 tracking-widest">
+            <div className="text-xs font-mono text-gray-500 mb-2 tracking-widest">
               CivilOS STRUCTURAL v2.0
             </div>
-            <div className="text-2xl font-bold font-mono text-white mb-1">{safeDoc.title}</div>
-            <div className="text-slate-400 font-mono text-sm">{safeDoc.subtitle}</div>
+            <div className="text-2xl font-bold font-mono text-gray-900 mb-1">{safeDoc.title}</div>
+            <div className="text-gray-600 font-mono text-sm">{safeDoc.subtitle}</div>
 
             <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-2 text-xs font-mono">
               {[
@@ -200,8 +200,8 @@ export default function ReportModule() {
                 ['Code', safeDoc.projectMeta.code],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-2">
-                  <span className="text-slate-600">{k}:</span>
-                  <span className="text-slate-300">{v}</span>
+                  <span className="text-gray-500">{k}:</span>
+                  <span className="text-gray-700">{v}</span>
                 </div>
               ))}
             </div>
@@ -211,30 +211,30 @@ export default function ReportModule() {
         {/* Sections */}
         <div className="px-6 py-6 space-y-4">
           {safeDoc.sections.map((section, si) => (
-            <div key={section.id} className="rounded-xl border border-[#1e2d4a] overflow-hidden">
+            <div key={section.id} className="rounded-xl border border-[#e5e7eb] overflow-hidden">
               {/* Section header */}
               <button
                 onClick={() => setActiveSection(activeSection === section.id ? null : section.id)}
-                className="w-full flex items-center justify-between px-5 py-4 bg-[#0d1221] hover:bg-[#111827] transition-all">
+                className="w-full flex items-center justify-between px-5 py-4 bg-[#f9fafb] hover:bg-gray-100 transition-all">
                 <div className="flex items-center gap-3">
-                  <span className="text-slate-600 font-mono text-xs">
+                  <span className="text-gray-500 font-mono text-xs">
                     {String(si).padStart(2, '0')}
                   </span>
-                  <span className="text-slate-200 font-mono font-semibold text-sm">
+                  <span className="text-gray-800 font-mono font-semibold text-sm">
                     {section.title}
                   </span>
-                  <span className="text-slate-600 font-mono text-xs">
+                  <span className="text-gray-500 font-mono text-xs">
                     ({section.content.length} items)
                   </span>
                 </div>
-                <span className="text-slate-600 text-xs">
+                <span className="text-gray-500 text-xs">
                   {activeSection === section.id ? '▲' : '▼'}
                 </span>
               </button>
 
               {/* Section content preview */}
               {activeSection === section.id && (
-                <div className="p-5 space-y-4 bg-[#0a0f1e] border-t border-[#1e2d4a]">
+                <div className="p-5 space-y-4 bg-[#ffffff] border-t border-[#e5e7eb]">
                   {section.content.map((item, i) => (
                     <ContentPreview key={i} item={item} />
                   ))}
@@ -246,12 +246,12 @@ export default function ReportModule() {
 
         {/* Bottom note */}
         <div className="px-6 pb-8">
-          <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] p-4 text-xs font-mono text-slate-600 space-y-1">
-            <div className="text-slate-500 font-semibold">📦 Required npm packages for export:</div>
-            <div className="font-mono text-slate-600">
+          <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-4 text-xs font-mono text-gray-500 space-y-1">
+            <div className="text-gray-500 font-semibold">📦 Required npm packages for export:</div>
+            <div className="font-mono text-gray-500">
               npm install jspdf docx xlsx
             </div>
-            <div className="text-slate-700 mt-2">
+            <div className="text-gray-400 mt-2">
               • jsPDF — PDF generation (client-side)<br/>
               • docx — Microsoft Word DOCX generation<br/>
               • xlsx (SheetJS) — Excel BBS export
@@ -272,8 +272,8 @@ function ExportButton({ icon, label, sublabel, color, state, onClick }: {
   const stateConfig = {
     idle:       { text: label,        bg: color + '15', border: color + '40', textCol: color },
     generating: { text: 'Generating...', bg: color + '20', border: color + '60', textCol: color },
-    done:       { text: '✓ Downloaded!', bg: '#22c55e15', border: '#22c55e40', textCol: '#22c55e' },
-    error:      { text: '✗ Error',      bg: '#ef444415', border: '#ef444440', textCol: '#ef4444' },
+    done:       { text: '✓ Downloaded!', bg: '#05966915', border: '#05966940', textCol: '#059669' },
+    error:      { text: '✗ Error',      bg: '#dc262615', border: '#dc262640', textCol: '#dc2626' },
   }
   const cfg = stateConfig[state]
 
@@ -299,24 +299,24 @@ function ContentPreview({ item }: { item: ReportContent }) {
     case 'heading':
       return (
         <div className={`font-mono font-bold ${
-          item.level === 1 ? 'text-red-400 text-sm border-b border-[#1e2d4a] pb-2'
-            : item.level === 2 ? 'text-blue-400 text-xs'
-            : 'text-slate-400 text-xs'
+          item.level === 1 ? 'text-red-600 text-sm border-b border-[#e5e7eb] pb-2'
+            : item.level === 2 ? 'text-blue-600 text-xs'
+            : 'text-gray-600 text-xs'
         }`}>
           {item.text}
         </div>
       )
 
     case 'paragraph':
-      return <p className="text-slate-500 font-mono text-xs leading-relaxed">{item.text}</p>
+      return <p className="text-gray-500 font-mono text-xs leading-relaxed">{item.text}</p>
 
     case 'keyvalue':
       return (
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
           {item.items.map((kv, i) => (
             <div key={i} className="flex gap-2 text-xs font-mono">
-              <span className="text-slate-600 shrink-0">{kv.key}:</span>
-              <span className="text-slate-300">{kv.value}{kv.unit ? ` ${kv.unit}` : ''}</span>
+              <span className="text-gray-500 shrink-0">{kv.key}:</span>
+              <span className="text-gray-700">{kv.value}{kv.unit ? ` ${kv.unit}` : ''}</span>
             </div>
           ))}
         </div>
@@ -324,12 +324,12 @@ function ContentPreview({ item }: { item: ReportContent }) {
 
     case 'table':
       return (
-        <div className="overflow-x-auto rounded-lg border border-[#1e2d4a]">
+        <div className="overflow-x-auto rounded-lg border border-[#e5e7eb]">
           <table className="w-full text-xs font-mono">
             <thead>
-              <tr className="bg-[#080d1a]">
+              <tr className="bg-[#ffffff]">
                 {item.headers.map((h, i) => (
-                  <th key={i} className="text-left px-3 py-2 text-blue-400 font-semibold">
+                  <th key={i} className="text-left px-3 py-2 text-blue-600 font-semibold">
                     {String(h)}
                   </th>
                 ))}
@@ -337,18 +337,18 @@ function ContentPreview({ item }: { item: ReportContent }) {
             </thead>
             <tbody>
               {item.rows.slice(0, 8).map((row, ri) => (
-                <tr key={ri} className="border-t border-[#1a2030]">
+                <tr key={ri} className="border-t border-[#f3f4f6]">
                   {row.map((cell, ci) => (
-                    <td key={ci} className={`px-3 py-2 ${ci === 0 ? 'text-slate-200' : 'text-slate-400'}`}>
+                    <td key={ci} className={`px-3 py-2 ${ci === 0 ? 'text-gray-800' : 'text-gray-600'}`}>
                       {String(cell)}
                     </td>
                   ))}
                 </tr>
               ))}
               {item.rows.length > 8 && (
-                <tr className="border-t border-[#1a2030]">
+                <tr className="border-t border-[#f3f4f6]">
                   <td colSpan={item.headers.length}
-                    className="px-3 py-2 text-slate-700 text-center italic">
+                    className="px-3 py-2 text-gray-400 text-center italic">
                     ... {item.rows.length - 8} more rows
                   </td>
                 </tr>
@@ -362,14 +362,14 @@ function ContentPreview({ item }: { item: ReportContent }) {
       return (
         <div className="space-y-1.5 max-h-48 overflow-y-auto">
           {item.items.map((ci: { label: string; status: 'pass'|'fail'|'warning'|'not_checked'; value: string }, i: number) => {
-            const colors: Record<string, string> = { pass: '#22c55e', fail: '#ef4444', warning: '#f97316', not_checked: '#475569' }
+            const colors: Record<string, string> = { pass: '#059669', fail: '#dc2626', warning: '#d97706', not_checked: '#6b7280' }
             return (
               <div key={i} className="flex items-center gap-2 text-xs font-mono">
                 <span style={{ color: colors[ci.status] }}>
                   {ci.status === 'pass' ? '✓' : ci.status === 'fail' ? '✗' : ci.status === 'warning' ? '⚠' : '?'}
                 </span>
-                <span className="text-slate-400 truncate flex-1">{ci.label}</span>
-                <span className="text-slate-600 shrink-0">{ci.value}</span>
+                <span className="text-gray-600 truncate flex-1">{ci.label}</span>
+                <span className="text-gray-500 shrink-0">{ci.value}</span>
               </div>
             )
           })}
@@ -378,9 +378,9 @@ function ContentPreview({ item }: { item: ReportContent }) {
 
     case 'formula':
       return (
-        <div className="bg-[#080d1a] rounded-lg px-4 py-3 border border-[#1e3a5f]">
-          <div className="text-blue-400 font-mono text-sm font-bold">{item.latex}</div>
-          <div className="text-slate-500 font-mono text-xs mt-1">{item.description}</div>
+        <div className="bg-[#ffffff] rounded-lg px-4 py-3 border border-[#d1d5db]">
+          <div className="text-blue-600 font-mono text-sm font-bold">{item.latex}</div>
+          <div className="text-gray-500 font-mono text-xs mt-1">{item.description}</div>
         </div>
       )
 

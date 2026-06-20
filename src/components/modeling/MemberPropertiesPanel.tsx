@@ -20,14 +20,14 @@ export default function MemberPropertiesPanel({ memberId, memberType, onClose }:
   }
 
   return (
-    <div className="w-72 border-l border-[#1e2d4a] bg-[#080d1a] flex flex-col shrink-0 overflow-hidden">
+    <div className="w-72 border-l border-[#e5e7eb] bg-[#ffffff] flex flex-col shrink-0 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2d4a]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#e5e7eb]">
         <div>
-          <div className="text-xs text-slate-500 font-mono">
-            {memberType === 'column' ? '■ কলাম' : '━ বিম'}
+          <div className="text-xs text-gray-500 font-mono">
+            {memberType === 'column' ? '■ Column' : '━ Beam'}
           </div>
-          <div className="text-slate-200 font-mono font-semibold text-sm mt-0.5">
+          <div className="text-gray-800 font-mono font-semibold text-sm mt-0.5">
             {memberType === 'column'
               ? project.members.columns.find(c => c.id === memberId)?.label
               : project.members.beams.find(b => b.id === memberId)?.label}
@@ -35,7 +35,7 @@ export default function MemberPropertiesPanel({ memberId, memberType, onClose }:
         </div>
         <button
           onClick={onClose}
-          className="text-slate-600 hover:text-slate-400 transition-colors"
+          className="text-gray-500 hover:text-gray-600 transition-colors"
         >✕</button>
       </div>
 
@@ -50,12 +50,12 @@ export default function MemberPropertiesPanel({ memberId, memberType, onClose }:
       </div>
 
       {/* Delete */}
-      <div className="p-4 border-t border-[#1e2d4a]">
+      <div className="p-4 border-t border-[#e5e7eb]">
         <button
           onClick={handleDelete}
-          className="w-full py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 text-xs font-mono hover:bg-red-500/20 transition-all"
+          className="w-full py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-600 text-xs font-mono hover:bg-red-500/20 transition-all"
         >
-          🗑 মুছে ফেলুন (Del)
+          🗑 Delete (Del)
         </button>
       </div>
     </div>
@@ -90,16 +90,16 @@ function ColumnProperties({ memberId }: { memberId: string }) {
   return (
     <div className="p-4 space-y-5">
       {/* Location info */}
-      <div className="bg-[#0d1221] rounded-lg p-3 border border-[#1e2d4a]">
-        <p className="text-xs text-slate-500 font-mono mb-2">অবস্থান</p>
+      <div className="bg-[#f9fafb] rounded-lg p-3 border border-[#e5e7eb]">
+        <p className="text-xs text-gray-500 font-mono mb-2">Location</p>
         <div className="flex gap-3 text-xs font-mono">
-          <span className="text-blue-400">X: {gridX}</span>
-          <span className="text-blue-400">Y: {gridY}</span>
+          <span className="text-blue-600">X: {gridX}</span>
+          <span className="text-blue-600">Y: {gridY}</span>
         </div>
       </div>
 
       {/* Label */}
-      <PropField label="লেবেল">
+      <PropField label="Label">
         <input
           value={col.label}
           onChange={e => update({ label: e.target.value })}
@@ -108,19 +108,19 @@ function ColumnProperties({ memberId }: { memberId: string }) {
       </PropField>
 
       {/* Section type */}
-      <PropField label="সেকশন টাইপ">
+      <PropField label="Section Type">
         <div className="flex gap-2">
           {[
-            { type: 'rectangular' as const, label: 'আয়তক্ষেত্র' },
-            { type: 'circular' as const, label: 'বৃত্তাকার' },
+            { type: 'rectangular' as const, label: 'Rectangular' },
+            { type: 'circular' as const, label: 'Circular' },
           ].map(opt => (
             <button
               key={opt.type}
               onClick={() => setSection(opt.type)}
               className={`flex-1 py-2 rounded-lg text-xs font-mono border transition-all ${
                 col.section.type === opt.type
-                  ? 'border-blue-500/40 bg-blue-500/15 text-blue-400'
-                  : 'border-[#1e2d4a] text-slate-500 hover:text-slate-300'
+                  ? 'border-blue-500/40 bg-blue-500/15 text-blue-600'
+                  : 'border-[#e5e7eb] text-gray-500 hover:text-gray-700'
               }`}
             >
               {opt.label}
@@ -132,7 +132,7 @@ function ColumnProperties({ memberId }: { memberId: string }) {
       {/* Dimensions */}
       {isRect && (
         <div className="grid grid-cols-2 gap-3">
-          <PropField label="প্রস্থ b (mm)">
+          <PropField label="Width b (mm)">
             <input
               type="number"
               value={(col.section as any).width}
@@ -140,7 +140,7 @@ function ColumnProperties({ memberId }: { memberId: string }) {
               className="input-field"
             />
           </PropField>
-          <PropField label="গভীরতা h (mm)">
+          <PropField label="Depth h (mm)">
             <input
               type="number"
               value={(col.section as any).depth}
@@ -152,7 +152,7 @@ function ColumnProperties({ memberId }: { memberId: string }) {
       )}
 
       {isCirc && (
-        <PropField label="ব্যাস D (mm)">
+        <PropField label="Diameter D (mm)">
           <input
             type="number"
             value={(col.section as any).diameter}
@@ -162,7 +162,7 @@ function ColumnProperties({ memberId }: { memberId: string }) {
         </PropField>
       )}
 
-      <PropField label="ক্লিয়ার কভার (mm)">
+      <PropField label="Clear Cover (mm)">
         <input
           type="number"
           value={col.clearCover}
@@ -171,7 +171,7 @@ function ColumnProperties({ memberId }: { memberId: string }) {
         />
       </PropField>
 
-      <PropField label="ঘূর্ণন (°)">
+      <PropField label="Rotation (°)">
         <input
           type="number"
           value={col.rotation}
@@ -181,8 +181,8 @@ function ColumnProperties({ memberId }: { memberId: string }) {
       </PropField>
 
       {/* Section summary */}
-      <div className="bg-[#0d1221] rounded-lg p-3 border border-[#1e2d4a] space-y-1.5">
-        <p className="text-xs text-slate-500 font-mono mb-2">সেকশন সারসংক্ষেপ</p>
+      <div className="bg-[#f9fafb] rounded-lg p-3 border border-[#e5e7eb] space-y-1.5">
+        <p className="text-xs text-gray-500 font-mono mb-2">Section Summary</p>
         {isRect && (
           <>
             <SummaryRow label="b × h" value={`${(col.section as any).width} × ${(col.section as any).depth} mm`} />
@@ -223,16 +223,16 @@ function BeamProperties({ memberId }: { memberId: string }) {
   return (
     <div className="p-4 space-y-5">
       {/* Connection info */}
-      <div className="bg-[#0d1221] rounded-lg p-3 border border-[#1e2d4a]">
-        <p className="text-xs text-slate-500 font-mono mb-2">সংযোগ নোড</p>
-        <div className="text-xs font-mono text-slate-400 space-y-1">
-          <div>শুরু: <span className="text-orange-400">{beam.startNodeId.replace('node_', '').replace('_', '-')}</span></div>
-          <div>শেষ: <span className="text-orange-400">{beam.endNodeId.replace('node_', '').replace('_', '-')}</span></div>
+      <div className="bg-[#f9fafb] rounded-lg p-3 border border-[#e5e7eb]">
+        <p className="text-xs text-gray-500 font-mono mb-2">Connection Nodes</p>
+        <div className="text-xs font-mono text-gray-600 space-y-1">
+          <div>Start: <span className="text-orange-600">{beam.startNodeId.replace('node_', '').replace('_', '-')}</span></div>
+          <div>End: <span className="text-orange-600">{beam.endNodeId.replace('node_', '').replace('_', '-')}</span></div>
         </div>
       </div>
 
       {/* Label */}
-      <PropField label="লেবেল">
+      <PropField label="Label">
         <input
           value={beam.label}
           onChange={e => update({ label: e.target.value })}
@@ -241,11 +241,11 @@ function BeamProperties({ memberId }: { memberId: string }) {
       </PropField>
 
       {/* Section type */}
-      <PropField label="সেকশন টাইপ">
+      <PropField label="Section Type">
         <div className="flex gap-2">
           {[
-            { type: 'rectangular', label: 'আয়তক্ষেত্র' },
-            { type: 't_beam', label: 'T-বিম' },
+            { type: 'rectangular', label: 'Rectangular' },
+            { type: 't_beam', label: 'T-Beam' },
           ].map(opt => (
             <button
               key={opt.type}
@@ -258,8 +258,8 @@ function BeamProperties({ memberId }: { memberId: string }) {
               }}
               className={`flex-1 py-2 rounded-lg text-xs font-mono border transition-all ${
                 beam.section.type === opt.type
-                  ? 'border-orange-500/40 bg-orange-500/15 text-orange-400'
-                  : 'border-[#1e2d4a] text-slate-500 hover:text-slate-300'
+                  ? 'border-orange-500/40 bg-orange-500/15 text-orange-600'
+                  : 'border-[#e5e7eb] text-gray-500 hover:text-gray-700'
               }`}
             >
               {opt.label}
@@ -271,7 +271,7 @@ function BeamProperties({ memberId }: { memberId: string }) {
       {/* Dimensions */}
       {beam.section.type === 'rectangular' && (
         <div className="grid grid-cols-2 gap-3">
-          <PropField label="প্রস্থ bw (mm)">
+          <PropField label="Width bw (mm)">
             <input
               type="number"
               value={bw}
@@ -279,7 +279,7 @@ function BeamProperties({ memberId }: { memberId: string }) {
               className="input-field"
             />
           </PropField>
-          <PropField label="গভীরতা h (mm)">
+          <PropField label="Depth h (mm)">
             <input
               type="number"
               value={bd}
@@ -316,16 +316,16 @@ function BeamProperties({ memberId }: { memberId: string }) {
       )}
 
       <div className="flex items-center gap-3">
-        <label className="text-xs text-slate-400 font-mono">ক্যান্টিলিভার</label>
+        <label className="text-xs text-gray-600 font-mono">Cantilever</label>
         <button
           onClick={() => update({ isCantilever: !beam.isCantilever })}
-          className={`w-10 h-5 rounded-full transition-all ${beam.isCantilever ? 'bg-orange-500' : 'bg-[#1e2d4a]'}`}
+          className={`w-10 h-5 rounded-full transition-all ${beam.isCantilever ? 'bg-orange-500' : 'bg-[#e5e7eb]'}`}
         >
           <div className={`w-4 h-4 rounded-full bg-white mx-0.5 transition-transform ${beam.isCantilever ? 'translate-x-5' : 'translate-x-0'}`} />
         </button>
       </div>
 
-      <PropField label="ক্লিয়ার কভার (mm)">
+      <PropField label="Clear Cover (mm)">
         <input
           type="number"
           value={beam.clearCover}
@@ -335,8 +335,8 @@ function BeamProperties({ memberId }: { memberId: string }) {
       </PropField>
 
       {/* Section summary */}
-      <div className="bg-[#0d1221] rounded-lg p-3 border border-[#1e2d4a] space-y-1.5">
-        <p className="text-xs text-slate-500 font-mono mb-2">সেকশন সারসংক্ষেপ</p>
+      <div className="bg-[#f9fafb] rounded-lg p-3 border border-[#e5e7eb] space-y-1.5">
+        <p className="text-xs text-gray-500 font-mono mb-2">Section Summary</p>
         <SummaryRow label="bw × h" value={`${bw} × ${bd} mm`} />
         <SummaryRow label="d (eff.)" value={`${bd - beam.clearCover - 10 - 8} mm`} />
         <SummaryRow label="Area" value={`${(bw * bd / 1e6).toFixed(4)} m²`} />
@@ -350,7 +350,7 @@ function BeamProperties({ memberId }: { memberId: string }) {
 function PropField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs text-slate-500 font-mono mb-1.5">{label}</label>
+      <label className="block text-xs text-gray-500 font-mono mb-1.5">{label}</label>
       {children}
     </div>
   )
@@ -359,8 +359,8 @@ function PropField({ label, children }: { label: string; children: React.ReactNo
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between text-xs font-mono">
-      <span className="text-slate-600">{label}</span>
-      <span className="text-slate-300">{value}</span>
+      <span className="text-gray-500">{label}</span>
+      <span className="text-gray-700">{value}</span>
     </div>
   )
 }

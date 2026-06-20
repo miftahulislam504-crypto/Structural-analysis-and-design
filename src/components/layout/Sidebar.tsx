@@ -10,18 +10,18 @@ const NAV_ITEMS: {
   phase: number
   available: boolean
 }[] = [
-  { module: 'dashboard',     label: 'ড্যাশবোর্ড',     icon: '⊞', phase: 1,  available: true },
-  { module: 'project_setup', label: 'প্রজেক্ট সেটআপ', icon: '⚙', phase: 1,  available: true },
-  { module: 'modeling',      label: 'মডেলিং',         icon: '🏗', phase: 2,  available: true },
-  { module: 'loads',         label: 'Lateral Load',   icon: '↓',  phase: 5,  available: true },
-  { module: 'analysis',      label: 'DSM Analysis',   icon: '🧮', phase: 4,  available: true },
-  { module: 'design',        label: 'RCC Design',     icon: '📐', phase: 6,  available: true },
-  { module: 'detailing',     label: 'Detailing',      icon: '✏', phase: 8,  available: true },
-  { module: 'drawing',       label: 'Drawings',       icon: '📄', phase: 9,  available: true },
-  { module: 'bbs',           label: 'BBS',            icon: '🔩', phase: 10, available: true },
-  { module: 'compliance',    label: 'BNBC Check',     icon: '✅', phase: 11, available: true },
-  { module: 'report',        label: 'Report',         icon: '📋', phase: 12, available: true },
-  { module: 'optimization',  label: 'Optimization',   icon: '⚡', phase: 13, available: true },
+  { module: 'dashboard',     label: 'Dashboard',       icon: '⊞', phase: 1,  available: true },
+  { module: 'project_setup', label: 'Project Setup',   icon: '⚙', phase: 1,  available: true },
+  { module: 'modeling',      label: 'Modeling',        icon: '🏗', phase: 2,  available: true },
+  { module: 'loads',         label: 'Lateral Load',    icon: '↓',  phase: 5,  available: true },
+  { module: 'analysis',      label: 'DSM Analysis',    icon: '🧮', phase: 4,  available: true },
+  { module: 'design',        label: 'RCC Design',      icon: '📐', phase: 6,  available: true },
+  { module: 'detailing',     label: 'Detailing',       icon: '✏', phase: 8,  available: true },
+  { module: 'drawing',       label: 'Drawings',        icon: '📄', phase: 9,  available: true },
+  { module: 'bbs',           label: 'BBS',             icon: '🔩', phase: 10, available: true },
+  { module: 'compliance',    label: 'BNBC Check',      icon: '✅', phase: 11, available: true },
+  { module: 'report',        label: 'Report',          icon: '📋', phase: 12, available: true },
+  { module: 'optimization',  label: 'Optimization',    icon: '⚡', phase: 13, available: true },
   { module: 'bim',           label: 'BIM Integration', icon: '🔗', phase: 14, available: true },
   { module: 'fem',           label: 'Advanced FEM',    icon: '🔬', phase: 15, available: true },
 ]
@@ -33,10 +33,10 @@ export default function Sidebar() {
 
   if (!sidebarOpen) {
     return (
-      <div className="w-12 border-r border-[#1e2d4a] bg-[#080d1a] flex flex-col items-center py-4 gap-3">
+      <div className="w-12 border-r border-gray-200 bg-gray-50 flex flex-col items-center py-4 gap-3">
         <button
           onClick={toggleSidebar}
-          className="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-slate-300 transition-colors text-lg"
+          className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors text-lg"
         >
           ▶
         </button>
@@ -45,7 +45,7 @@ export default function Sidebar() {
             key={n.module}
             onClick={() => setActiveModule(n.module)}
             className={`w-8 h-8 flex items-center justify-center rounded text-sm transition-all ${
-              activeModule === n.module ? 'bg-red-500/20 text-red-400' : 'text-slate-500 hover:text-slate-300'
+              activeModule === n.module ? 'bg-blue-50 text-blue-700' : 'text-gray-400 hover:text-gray-600'
             }`}
             title={n.label}
           >
@@ -57,18 +57,18 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="w-56 border-r border-[#1e2d4a] bg-[#080d1a] flex flex-col shrink-0">
+    <aside className="w-56 border-r border-gray-200 bg-gray-50 flex flex-col shrink-0">
       {/* Logo */}
-      <div className="px-4 py-4 border-b border-[#1e2d4a] flex items-center justify-between">
+      <div className="px-4 py-4 border-b border-gray-200 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-black text-sm">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-black text-sm">
             C
           </div>
-          <span className="text-slate-300 font-mono font-bold text-sm">CivilOS</span>
+          <span className="text-gray-800 font-mono font-bold text-sm">CivilOS</span>
         </div>
         <button
           onClick={toggleSidebar}
-          className="text-slate-600 hover:text-slate-400 transition-colors text-xs"
+          className="text-gray-400 hover:text-gray-600 transition-colors text-xs"
         >
           ◀
         </button>
@@ -76,12 +76,12 @@ export default function Sidebar() {
 
       {/* Project name */}
       {project && (
-        <div className="px-4 py-3 border-b border-[#1e2d4a]">
-          <p className="text-xs text-slate-600 font-mono">সক্রিয় প্রজেক্ট</p>
-          <p className="text-slate-300 font-mono text-xs font-semibold mt-0.5 truncate">
+        <div className="px-4 py-3 border-b border-gray-200">
+          <p className="text-xs text-gray-400 font-mono">Active Project</p>
+          <p className="text-gray-800 font-mono text-xs font-semibold mt-0.5 truncate">
             {project.meta.name}
           </p>
-          <p className="text-xs font-mono mt-0.5" style={{ color: '#64748b' }}>
+          <p className="text-xs font-mono mt-0.5 text-gray-500">
             {project.meta.projectNo}
           </p>
         </div>
@@ -91,7 +91,7 @@ export default function Sidebar() {
       <nav className="flex-1 py-3 overflow-y-auto">
         {/* Available */}
         <div className="px-3 mb-1">
-          <p className="text-xs text-slate-700 font-mono px-1 mb-2 tracking-widest">PHASE 1–15</p>
+          <p className="text-xs text-gray-400 font-mono px-1 mb-2 tracking-widest">PHASE 1–15</p>
           {NAV_ITEMS.filter(n => n.available).map(n => (
             <NavButton key={n.module} item={n} active={activeModule === n.module} onClick={() => setActiveModule(n.module)} />
           ))}
@@ -99,36 +99,36 @@ export default function Sidebar() {
 
         {/* Upcoming */}
         <div className="px-3 mt-4">
-          <p className="text-xs text-slate-700 font-mono px-1 mb-2 tracking-widest">UPCOMING</p>
+          <p className="text-xs text-gray-400 font-mono px-1 mb-2 tracking-widest">UPCOMING</p>
           {NAV_ITEMS.filter(n => !n.available).map(n => (
             <div
               key={n.module}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg opacity-30 cursor-not-allowed"
+              className="flex items-center gap-3 px-3 py-2 rounded-lg opacity-40 cursor-not-allowed"
             >
-              <span className="text-sm w-5 text-center text-slate-500">{n.icon}</span>
-              <span className="text-xs font-mono text-slate-500">{n.label}</span>
-              <span className="ml-auto text-xs text-slate-700 font-mono">P{n.phase}</span>
+              <span className="text-sm w-5 text-center text-gray-400">{n.icon}</span>
+              <span className="text-xs font-mono text-gray-400">{n.label}</span>
+              <span className="ml-auto text-xs text-gray-300 font-mono">P{n.phase}</span>
             </div>
           ))}
         </div>
       </nav>
 
       {/* Bottom actions */}
-      <div className="px-4 py-4 border-t border-[#1e2d4a] space-y-2">
+      <div className="px-4 py-4 border-t border-gray-200 space-y-2">
         {isDirty && (
           <button
             onClick={saveProject}
             disabled={isSaving}
-            className="w-full py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 font-mono text-xs font-semibold hover:bg-red-500/30 transition-all disabled:opacity-50"
+            className="w-full py-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 font-mono text-xs font-semibold hover:bg-blue-100 transition-all disabled:opacity-50"
           >
-            {isSaving ? 'সেভ হচ্ছে...' : '💾 সেভ করুন'}
+            {isSaving ? 'Saving...' : '💾 Save'}
           </button>
         )}
         <button
           onClick={() => navigate('/dashboard')}
-          className="w-full py-2 rounded-lg border border-[#1e2d4a] text-slate-500 font-mono text-xs hover:text-slate-300 hover:border-slate-600 transition-all"
+          className="w-full py-2 rounded-lg border border-gray-200 text-gray-500 font-mono text-xs hover:text-gray-700 hover:border-gray-300 transition-all"
         >
-          ← ড্যাশবোর্ড
+          ← Dashboard
         </button>
       </div>
     </aside>
@@ -145,13 +145,13 @@ function NavButton({
       onClick={onClick}
       className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg mb-0.5 transition-all text-left ${
         active
-          ? 'bg-red-500/15 border border-red-500/20 text-red-400'
-          : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
+          ? 'bg-blue-50 border border-blue-200 text-blue-700'
+          : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
       }`}
     >
       <span className="text-sm w-5 text-center">{item.icon}</span>
       <span className="text-xs font-mono font-medium">{item.label}</span>
-      {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-red-400" />}
+      {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-600" />}
     </button>
   )
 }

@@ -19,9 +19,9 @@ export default function App() {
   // Auth loading state
   if (!initialized) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0a0f1e]">
+      <div className="flex items-center justify-center min-h-screen bg-[#ffffff]">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-2xl font-black shadow-glow-red">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white text-2xl font-black shadow-glow-blue">
             C
           </div>
           <div className="flex gap-1">

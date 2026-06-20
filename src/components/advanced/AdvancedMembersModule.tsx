@@ -12,18 +12,18 @@ export default function AdvancedMembersModule() {
   if (!project) return null
 
   const TABS = [
-    { id: 'shearwall', label: '▌ Shear Wall',     color: '#ef4444' },
-    { id: 'pile',      label: '⬇ Pile Foundation', color: '#8b5cf6' },
-    { id: 'staircase', label: '⟋ Staircase',       color: '#f97316' },
+    { id: 'shearwall', label: '▌ Shear Wall',     color: '#dc2626' },
+    { id: 'pile',      label: '⬇ Pile Foundation', color: '#7c3aed' },
+    { id: 'staircase', label: '⟋ Staircase',       color: '#d97706' },
   ] as const
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex border-b border-[#1e2d4a] bg-[#080d1a] px-6 shrink-0">
+      <div className="flex border-b border-[#e5e7eb] bg-[#ffffff] px-6 shrink-0">
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id as Tab)}
             className={`flex items-center gap-2 px-5 py-4 text-xs font-mono border-b-2 transition-all shrink-0 ${
-              tab === t.id ? 'text-white' : 'border-transparent text-slate-500 hover:text-slate-300'
+              tab === t.id ? 'text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
             style={tab === t.id ? { borderColor: t.color, color: t.color } : {}}>
             {t.label}
@@ -66,12 +66,12 @@ function ShearWallTab({ project }: { project: any }) {
     <div className="max-w-4xl space-y-6">
       <SectionHeader title="Shear Wall Design — ACI 318-19 §11"
         subtitle="In-plane shear §11.5.4 · Boundary elements §11.7.6 · Min reinforcement §11.6"
-        color="#ef4444" />
+        color="#dc2626" />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Inputs */}
-        <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] p-4 space-y-3">
-          <h4 className="text-slate-400 font-mono text-xs tracking-wider">WALL GEOMETRY + FORCES</h4>
+        <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-4 space-y-3">
+          <h4 className="text-gray-600 font-mono text-xs tracking-wider">WALL GEOMETRY + FORCES</h4>
           {[
             { key: 'lw', label: 'lw — Wall Length (mm)' },
             { key: 'hw', label: 'hw — Wall Height (mm)' },
@@ -81,7 +81,7 @@ function ShearWallTab({ project }: { project: any }) {
             { key: 'Pu', label: 'Pu (kN)'                },
           ].map(f => (
             <div key={f.key}>
-              <label className="text-xs text-slate-500 font-mono">{f.label}</label>
+              <label className="text-xs text-gray-500 font-mono">{f.label}</label>
               <input type="number" value={(params as any)[f.key]}
                 onChange={e => setParams(p => ({ ...p, [f.key]: Number(e.target.value) }))}
                 className="input-field mt-1" />
@@ -96,41 +96,41 @@ function ShearWallTab({ project }: { project: any }) {
               <StatusBanner status={result.status} warnings={result.warnings} />
               <ChecksGrid checks={result.checks} />
 
-              <ResultCard title="📊 Shear Design" color="#ef4444">
+              <ResultCard title="📊 Shear Design" color="#dc2626">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
                   <MiniStat label="hw/lw"     value={result.hw_lw.toString()} />
-                  <MiniStat label="φVn"       value={`${result.phiVn} kN`} color={result.phiVn >= result.phiVn ? '#22c55e' : '#ef4444'} />
+                  <MiniStat label="φVn"       value={`${result.phiVn} kN`} color={result.phiVn >= result.phiVn ? '#059669' : '#dc2626'} />
                   <MiniStat label="ρh"        value={result.rho_h.toFixed(4)} />
                   <MiniStat label="ρv"        value={result.rho_v.toFixed(4)} />
                 </div>
-                <div className="mt-3 space-y-1.5 text-xs font-mono text-slate-400">
+                <div className="mt-3 space-y-1.5 text-xs font-mono text-gray-600">
                   <div>Horizontal: #{result.barH}mm @ {result.s_h}mm (2 curtains)</div>
                   <div>Vertical:   #{result.barV}mm @ {result.s_v}mm (2 curtains)</div>
                 </div>
               </ResultCard>
 
-              <ResultCard title="📐 Flexural Capacity" color="#f97316">
+              <ResultCard title="📐 Flexural Capacity" color="#d97706">
                 <div className="grid grid-cols-2 gap-3">
                   <MiniStat label="Mn"   value={`${result.Mn} kN·m`} />
                   <MiniStat label="φMn"  value={`${result.phiMn} kN·m`}
-                    color={result.phiMn >= 0 ? '#22c55e' : '#ef4444'} />
+                    color={result.phiMn >= 0 ? '#059669' : '#dc2626'} />
                 </div>
               </ResultCard>
 
               {result.needsBE && (
-                <ResultCard title="⬛ Boundary Elements Required" color="#ef4444">
+                <ResultCard title="⬛ Boundary Elements Required" color="#dc2626">
                   <div className="grid grid-cols-3 gap-3">
                     <MiniStat label="BE Length" value={`${result.BE_length} mm`} />
                     <MiniStat label="BE Width"  value={`${result.BE_width} mm`} />
                     <MiniStat label="BE ρ_min"  value={`${(result.BE_rho*100).toFixed(1)}%`} />
                   </div>
-                  <div className="mt-3 text-xs font-mono text-yellow-400">
+                  <div className="mt-3 text-xs font-mono text-amber-600">
                     ⚠ Provide special boundary element confinement per ACI 18.10.6
                   </div>
                 </ResultCard>
               )}
             </>
-          ) : <div className="text-slate-600 font-mono text-sm text-center py-20">গণনা করা হচ্ছে...</div>}
+          ) : <div className="text-gray-500 font-mono text-sm text-center py-20">Calculating...</div>}
         </div>
       </div>
     </div>
@@ -172,13 +172,13 @@ function PileTab({ project }: { project: any }) {
     <div className="max-w-4xl space-y-6">
       <SectionHeader title="Pile Foundation — IS 2911 / Tomlinson"
         subtitle="Skin friction (α/β method) · End bearing · Group efficiency · Settlement"
-        color="#8b5cf6" />
+        color="#7c3aed" />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="space-y-4">
           {/* Pile params */}
-          <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] p-4 space-y-3">
-            <h4 className="text-slate-400 font-mono text-xs tracking-wider">PILE PARAMETERS</h4>
+          <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-4 space-y-3">
+            <h4 className="text-gray-600 font-mono text-xs tracking-wider">PILE PARAMETERS</h4>
             {[
               { key: 'diameter',  label: 'Diameter (mm)' },
               { key: 'length',    label: 'Length (mm)'   },
@@ -186,7 +186,7 @@ function PileTab({ project }: { project: any }) {
               { key: 'Pu',        label: 'Pu (kN)'       },
             ].map(f => (
               <div key={f.key}>
-                <label className="text-xs text-slate-500 font-mono">{f.label}</label>
+                <label className="text-xs text-gray-500 font-mono">{f.label}</label>
                 <input type="number" value={(params as any)[f.key]}
                   onChange={e => setParams(p => ({ ...p, [f.key]: Number(e.target.value) }))}
                   className="input-field mt-1" />
@@ -195,16 +195,16 @@ function PileTab({ project }: { project: any }) {
           </div>
 
           {/* Soil profile summary */}
-          <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#1e2d4a] bg-[#080d1a]">
-              <span className="text-slate-500 font-mono text-xs">Soil Profile</span>
+          <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#e5e7eb] bg-[#ffffff]">
+              <span className="text-gray-500 font-mono text-xs">Soil Profile</span>
             </div>
             {layers.map((l, i) => (
-              <div key={l.id} className="flex items-center gap-2 px-4 py-2.5 border-b border-[#1a2030] last:border-0 text-xs font-mono">
+              <div key={l.id} className="flex items-center gap-2 px-4 py-2.5 border-b border-[#f3f4f6] last:border-0 text-xs font-mono">
                 <div className="w-2 h-2 rounded-full"
-                  style={{ background: l.type === 'clay' ? '#f97316' : l.type === 'sand' ? '#eab308' : '#22c55e' }} />
-                <div className="flex-1 text-slate-400">{l.name}</div>
-                <div className="text-slate-600">{l.thickness}m</div>
+                  style={{ background: l.type === 'clay' ? '#d97706' : l.type === 'sand' ? '#d97706' : '#059669' }} />
+                <div className="flex-1 text-gray-600">{l.name}</div>
+                <div className="text-gray-500">{l.thickness}m</div>
               </div>
             ))}
           </div>
@@ -219,62 +219,62 @@ function PileTab({ project }: { project: any }) {
               {/* Capacity summary */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                  { label: 'Skin Friction Qs', value: `${result.Qs} kN`, color: '#f97316' },
-                  { label: 'End Bearing Qb',   value: `${result.Qb} kN`, color: '#3b82f6' },
-                  { label: 'Ultimate Qu',      value: `${result.Qu} kN`, color: '#8b5cf6' },
-                  { label: 'Allowable Qa',     value: `${result.Qa} kN`, color: '#22c55e' },
+                  { label: 'Skin Friction Qs', value: `${result.Qs} kN`, color: '#d97706' },
+                  { label: 'End Bearing Qb',   value: `${result.Qb} kN`, color: '#1a56db' },
+                  { label: 'Ultimate Qu',      value: `${result.Qu} kN`, color: '#7c3aed' },
+                  { label: 'Allowable Qa',     value: `${result.Qa} kN`, color: '#059669' },
                 ].map(s => <MiniStat key={s.label} label={s.label} value={s.value} color={s.color} />)}
               </div>
 
               {/* Layer breakdown */}
-              <ResultCard title="📊 Layer-by-Layer Skin Friction" color="#8b5cf6">
+              <ResultCard title="📊 Layer-by-Layer Skin Friction" color="#7c3aed">
                 <table className="w-full text-xs font-mono">
                   <thead>
-                    <tr className="border-b border-[#1e2d4a]">
+                    <tr className="border-b border-[#e5e7eb]">
                       {['Layer', 'Depth (m)', 'fs (kPa)', 'Qs (kN)'].map(h => (
-                        <th key={h} className="text-right px-3 py-2 text-slate-500 first:text-left">{h}</th>
+                        <th key={h} className="text-right px-3 py-2 text-gray-500 first:text-left">{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {result.layers.map((l, i) => (
-                      <tr key={i} className="border-b border-[#1a2030] last:border-0">
-                        <td className="px-3 py-2 text-slate-300">{l.name}</td>
-                        <td className="px-3 py-2 text-right text-slate-400">{l.depth.toFixed(1)}</td>
-                        <td className="px-3 py-2 text-right text-slate-400">{l.fs}</td>
-                        <td className="px-3 py-2 text-right text-purple-400 font-semibold">{l.qs}</td>
+                      <tr key={i} className="border-b border-[#f3f4f6] last:border-0">
+                        <td className="px-3 py-2 text-gray-700">{l.name}</td>
+                        <td className="px-3 py-2 text-right text-gray-600">{l.depth.toFixed(1)}</td>
+                        <td className="px-3 py-2 text-right text-gray-600">{l.fs}</td>
+                        <td className="px-3 py-2 text-right text-purple-600 font-semibold">{l.qs}</td>
                       </tr>
                     ))}
-                    <tr className="border-t border-[#1e3a5f] bg-purple-500/5">
-                      <td className="px-3 py-2 text-purple-400 font-bold" colSpan={3}>Total Qs</td>
-                      <td className="px-3 py-2 text-right text-purple-400 font-bold">{result.Qs}</td>
+                    <tr className="border-t border-[#d1d5db] bg-purple-500/5">
+                      <td className="px-3 py-2 text-purple-600 font-bold" colSpan={3}>Total Qs</td>
+                      <td className="px-3 py-2 text-right text-purple-600 font-bold">{result.Qs}</td>
                     </tr>
                   </tbody>
                 </table>
               </ResultCard>
 
               {/* Pile cap */}
-              <ResultCard title="⬛ Pile Cap Sizing" color="#3b82f6">
+              <ResultCard title="⬛ Pile Cap Sizing" color="#1a56db">
                 <div className="grid grid-cols-3 gap-3">
                   <MiniStat label="Cap L" value={`${result.capL} mm`} />
                   <MiniStat label="Cap B" value={`${result.capB} mm`} />
                   <MiniStat label="Cap t" value={`${result.capT} mm`} />
                 </div>
-                <div className="mt-3 text-xs font-mono text-slate-500">
+                <div className="mt-3 text-xs font-mono text-gray-500">
                   Pile spacing = 3D = {3 * params.diameter}mm · Edge = 1.5D = {1.5 * params.diameter}mm
                 </div>
               </ResultCard>
 
-              <ResultCard title="Settlement" color="#06b6d4">
+              <ResultCard title="Settlement" color="#0891b2">
                 <div className="flex items-center gap-4">
-                  <div className="text-3xl font-bold font-mono text-cyan-400">{result.settlement} mm</div>
-                  <div className={`text-xs font-mono ${result.settlement <= 25 ? 'text-green-400' : 'text-red-400'}`}>
+                  <div className="text-3xl font-bold font-mono text-cyan-600">{result.settlement} mm</div>
+                  <div className={`text-xs font-mono ${result.settlement <= 25 ? 'text-emerald-600' : 'text-red-600'}`}>
                     {result.settlement <= 25 ? '✓ ≤ 25mm — Acceptable' : '✗ > 25mm — Review required'}
                   </div>
                 </div>
               </ResultCard>
             </>
-          ) : <div className="text-slate-600 font-mono text-sm text-center py-20">গণনা করা হচ্ছে...</div>}
+          ) : <div className="text-gray-500 font-mono text-sm text-center py-20">Calculating...</div>}
         </div>
       </div>
     </div>
@@ -313,12 +313,12 @@ function StaircaseTab({ project }: { project: any }) {
     <div className="max-w-4xl space-y-6">
       <SectionHeader title="Staircase Design — ACI 318-19 (Waist Slab)"
         subtitle="Geometry check (BNBC 2020) · Flexure · Shear · Distribution steel"
-        color="#f97316" />
+        color="#d97706" />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="space-y-4">
-          <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] p-4 space-y-3">
-            <h4 className="text-slate-400 font-mono text-xs tracking-wider">STAIR PARAMETERS</h4>
+          <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-4 space-y-3">
+            <h4 className="text-gray-600 font-mono text-xs tracking-wider">STAIR PARAMETERS</h4>
             {[
               { key: 'riser',       label: 'Riser R (mm)'      },
               { key: 'tread',       label: 'Tread T (mm)'      },
@@ -329,7 +329,7 @@ function StaircaseTab({ project }: { project: any }) {
               { key: 'finishLoad',  label: 'Finish (kN/m²)'    },
             ].map(f => (
               <div key={f.key}>
-                <label className="text-xs text-slate-500 font-mono">{f.label}</label>
+                <label className="text-xs text-gray-500 font-mono">{f.label}</label>
                 <input type="number" value={(params as any)[f.key]}
                   onChange={e => setParams(p => ({ ...p, [f.key]: Number(e.target.value) }))}
                   className="input-field mt-1" />
@@ -337,7 +337,7 @@ function StaircaseTab({ project }: { project: any }) {
             ))}
 
             <div>
-              <label className="text-xs text-slate-500 font-mono">Support Condition</label>
+              <label className="text-xs text-gray-500 font-mono">Support Condition</label>
               <select value={support} onChange={e => setSupport(e.target.value as any)}
                 className="input-field mt-1">
                 <option value="simply_supported">Simply Supported</option>
@@ -355,54 +355,54 @@ function StaircaseTab({ project }: { project: any }) {
               <ChecksGrid checks={result.checks} />
 
               {/* Geometry */}
-              <ResultCard title="📐 Geometry" color="#f97316">
+              <ResultCard title="📐 Geometry" color="#d97706">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <MiniStat label="Angle"        value={`${result.angle}°`} />
                   <MiniStat label="cos θ"        value={result.cosAngle.toFixed(3)} />
                   <MiniStat label="Flight L"     value={`${(result.flightLength/1000).toFixed(2)} m`} />
                   <MiniStat label="Slant L"      value={`${(result.slantLength/1000).toFixed(2)} m`} />
                   <MiniStat label="2R+T"         value={`${2*params.riser + params.tread} mm`}
-                    color={2*params.riser+params.tread >= 550 && 2*params.riser+params.tread <= 700 ? '#22c55e' : '#ef4444'} />
+                    color={2*params.riser+params.tread >= 550 && 2*params.riser+params.tread <= 700 ? '#059669' : '#dc2626'} />
                   <MiniStat label="h_min"        value={`${result.h_min} mm`} />
                 </div>
               </ResultCard>
 
               {/* Loads */}
-              <ResultCard title="↓ Loads" color="#eab308">
+              <ResultCard title="↓ Loads" color="#d97706">
                 <div className="grid grid-cols-3 gap-3">
                   <MiniStat label="Self Weight"  value={`${result.selfWeight} kN/m²`} />
-                  <MiniStat label="wu (factored)" value={`${result.wu} kN/m²`} color="#eab308" />
-                  <MiniStat label="Mu"           value={`${result.Mu} kN·m/m`} color="#f97316" />
+                  <MiniStat label="wu (factored)" value={`${result.wu} kN/m²`} color="#d97706" />
+                  <MiniStat label="Mu"           value={`${result.Mu} kN·m/m`} color="#d97706" />
                 </div>
               </ResultCard>
 
               {/* Reinforcement */}
-              <ResultCard title="🔩 Reinforcement" color="#22c55e">
+              <ResultCard title="🔩 Reinforcement" color="#059669">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <div className="text-xs text-slate-500 font-mono mb-1">Main (Longitudinal)</div>
-                    <div className="text-green-400 font-mono font-bold text-sm">
+                    <div className="text-xs text-gray-500 font-mono mb-1">Main (Longitudinal)</div>
+                    <div className="text-emerald-600 font-mono font-bold text-sm">
                       #{result.barMain}mm @ {result.sMain}mm
                     </div>
-                    <div className="text-slate-600 font-mono text-xs">As = {result.As_main} mm²/m</div>
+                    <div className="text-gray-500 font-mono text-xs">As = {result.As_main} mm²/m</div>
                   </div>
                   <div>
-                    <div className="text-xs text-slate-500 font-mono mb-1">Distribution (Transverse)</div>
-                    <div className="text-cyan-400 font-mono font-bold text-sm">
+                    <div className="text-xs text-gray-500 font-mono mb-1">Distribution (Transverse)</div>
+                    <div className="text-cyan-600 font-mono font-bold text-sm">
                       #{result.barDist}mm @ {result.sDist}mm
                     </div>
-                    <div className="text-slate-600 font-mono text-xs">As = {result.As_dist} mm²/m</div>
+                    <div className="text-gray-500 font-mono text-xs">As = {result.As_dist} mm²/m</div>
                   </div>
                 </div>
                 <div className="mt-3 grid grid-cols-3 gap-3">
                   <MiniStat label="d_eff"  value={`${result.d_eff} mm`} />
                   <MiniStat label="Vu"     value={`${result.Vu} kN/m`} />
                   <MiniStat label="φVc"    value={`${result.Vc} kN/m`}
-                    color={result.shearOK ? '#22c55e' : '#ef4444'} />
+                    color={result.shearOK ? '#059669' : '#dc2626'} />
                 </div>
               </ResultCard>
             </>
-          ) : <div className="text-slate-600 font-mono text-sm text-center py-20">গণনা করা হচ্ছে...</div>}
+          ) : <div className="text-gray-500 font-mono text-sm text-center py-20">Calculating...</div>}
         </div>
       </div>
     </div>
@@ -415,15 +415,15 @@ function SectionHeader({ title, subtitle, color }: any) {
   return (
     <div>
       <div className="h-0.5 rounded mb-4" style={{ background: `linear-gradient(90deg,${color},transparent)` }} />
-      <h2 className="text-slate-200 font-mono font-bold text-base">{title}</h2>
-      <p className="text-slate-500 font-mono text-xs mt-1">{subtitle}</p>
+      <h2 className="text-gray-800 font-mono font-bold text-base">{title}</h2>
+      <p className="text-gray-500 font-mono text-xs mt-1">{subtitle}</p>
     </div>
   )
 }
 
 function ResultCard({ title, color, children }: any) {
   return (
-    <div className="rounded-xl border bg-[#0d1221] overflow-hidden" style={{ borderColor: color + '30' }}>
+    <div className="rounded-xl border bg-[#f9fafb] overflow-hidden" style={{ borderColor: color + '30' }}>
       <div className="px-4 py-3 border-b" style={{ borderColor: color + '20', background: color + '08' }}>
         <span className="font-mono font-semibold text-sm" style={{ color }}>{title}</span>
       </div>
@@ -438,13 +438,13 @@ function StatusBanner({ status, warnings }: { status: string; warnings: string[]
     <div className={`rounded-xl border p-4 flex items-start gap-3 ${ok ? 'border-green-500/30 bg-green-500/8' : 'border-red-500/30 bg-red-500/8'}`}>
       <span className="text-2xl shrink-0">{ok ? '✅' : '❌'}</span>
       <div>
-        <div className={`font-mono font-bold text-sm ${ok ? 'text-green-400' : 'text-red-400'}`}>
+        <div className={`font-mono font-bold text-sm ${ok ? 'text-emerald-600' : 'text-red-600'}`}>
           {ok ? 'Design OK' : 'Design FAIL'}
         </div>
         {warnings.length > 0 && (
           <div className="mt-1 space-y-0.5">
             {warnings.map((w, i) => (
-              <div key={i} className="text-xs font-mono text-yellow-300 flex gap-1">
+              <div key={i} className="text-xs font-mono text-amber-500 flex gap-1">
                 <span>⚠</span><span>{w}</span>
               </div>
             ))}
@@ -460,10 +460,10 @@ function ChecksGrid({ checks }: { checks: any[] }) {
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
       {checks.map((c, i) => (
         <div key={i} className={`rounded-lg border px-3 py-2 ${c.passed ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'}`}>
-          <div className={`text-xs font-mono font-semibold ${c.passed ? 'text-green-400' : 'text-red-400'}`}>
+          <div className={`text-xs font-mono font-semibold ${c.passed ? 'text-emerald-600' : 'text-red-600'}`}>
             {c.passed ? '✓' : '✗'} {c.name}
           </div>
-          <div className="text-xs font-mono text-slate-500 mt-0.5">
+          <div className="text-xs font-mono text-gray-500 mt-0.5">
             {typeof c.value === 'number' ? c.value.toFixed(1) : c.value} /
             {typeof c.limit === 'number' ? c.limit.toFixed(1) : c.limit} {c.unit}
           </div>
@@ -475,9 +475,9 @@ function ChecksGrid({ checks }: { checks: any[] }) {
 
 function MiniStat({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
-    <div className="bg-[#080d1a] rounded-lg px-3 py-2 border border-[#1e2d4a]">
-      <div className="text-xs text-slate-600 font-mono">{label}</div>
-      <div className="font-mono font-bold text-xs mt-0.5" style={{ color: color ?? '#94a3b8' }}>{value}</div>
+    <div className="bg-[#ffffff] rounded-lg px-3 py-2 border border-[#e5e7eb]">
+      <div className="text-xs text-gray-500 font-mono">{label}</div>
+      <div className="font-mono font-bold text-xs mt-0.5" style={{ color: color ?? '#6b7280' }}>{value}</div>
     </div>
   )
 }

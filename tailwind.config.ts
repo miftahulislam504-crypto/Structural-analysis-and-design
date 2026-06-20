@@ -8,38 +8,43 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // CivilOS Design System
+        // CivilOS Unified Design System — Light Clean
         bg: {
-          primary: '#0a0f1e',
-          secondary: '#0d1221',
-          tertiary: '#0f172a',
-          card: '#111827',
+          primary: '#ffffff',
+          secondary: '#f9fafb',
+          tertiary: '#f3f4f6',
+          card: '#ffffff',
         },
         border: {
-          DEFAULT: '#1e2d4a',
-          light: '#1e3a5f',
-          accent: '#243554',
+          DEFAULT: '#e5e7eb',
+          light: '#eef0f3',
+          accent: '#d1d5db',
         },
         civil: {
-          red: '#ef4444',
-          orange: '#f97316',
-          yellow: '#eab308',
-          green: '#22c55e',
-          blue: '#3b82f6',
-          cyan: '#06b6d4',
-          purple: '#8b5cf6',
-          pink: '#ec4899',
+          red: '#dc2626',
+          orange: '#d97706',
+          yellow: '#d97706',
+          green: '#059669',
+          blue: '#1a56db',
+          cyan: '#0891b2',
+          purple: '#7c3aed',
+          pink: '#db2777',
         },
         text: {
-          primary: '#f1f5f9',
-          secondary: '#94a3b8',
-          muted: '#64748b',
-          dim: '#475569',
+          primary: '#111827',
+          secondary: '#374151',
+          muted: '#6b7280',
+          dim: '#9ca3af',
+        },
+        primary: {
+          DEFAULT: '#1a56db',
+          dark: '#1e429f',
         },
       },
       fontFamily: {
         mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        bengali: ['Hind Siliguri', 'Inter', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         sm: '4px',
@@ -48,9 +53,9 @@ const config: Config = {
         xl: '16px',
       },
       boxShadow: {
-        'glow-red': '0 0 20px rgba(239, 68, 68, 0.3)',
-        'glow-blue': '0 0 20px rgba(59, 130, 246, 0.3)',
-        'glow-green': '0 0 20px rgba(34, 197, 94, 0.3)',
+        'glow-red': '0 0 20px rgba(220, 38, 38, 0.15)',
+        'glow-blue': '0 0 20px rgba(26, 86, 219, 0.15)',
+        'glow-green': '0 0 20px rgba(5, 150, 105, 0.15)',
       },
     },
   },

@@ -2,35 +2,35 @@ import { useProjectStore } from '../../store/useProjectStore'
 import { useUIStore } from '../../store/useUIStore'
 
 const STATUS_INFO: Record<string, { label: string; color: string }> = {
-  draft:     { label: 'খসড়া',          color: '#64748b' },
-  in_review: { label: 'পর্যালোচনাধীন', color: '#f97316' },
-  approved:  { label: 'অনুমোদিত',      color: '#22c55e' },
-  archived:  { label: 'সংরক্ষিত',      color: '#475569' },
+  draft:     { label: 'Draft',         color: '#6b7280' },
+  in_review: { label: 'In Review',     color: '#d97706' },
+  approved:  { label: 'Approved',      color: '#059669' },
+  archived:  { label: 'Archived',      color: '#6b7280' },
 }
 
 const SYSTEM_LABELS: Record<string, string> = {
-  rcc_frame:    'RCC ফ্রেম',
-  dual_system:  'ডুয়াল সিস্টেম',
-  shear_wall:   'শেয়ার ওয়াল',
-  steel_frame:  'স্টিল ফ্রেম',
-  load_bearing: 'লোড বেয়ারিং',
+  rcc_frame:    'RCC Frame',
+  dual_system:  'Dual System',
+  shear_wall:   'Shear Wall',
+  steel_frame:  'Steel Frame',
+  load_bearing: 'Load Bearing',
 }
 
 const USE_LABELS: Record<string, string> = {
-  residential:   'আবাসিক',
-  commercial:    'বাণিজ্যিক',
-  industrial:    'শিল্প',
-  institutional: 'প্রাতিষ্ঠানিক',
-  mixed:         'মিশ্র',
+  residential:   'Residential',
+  commercial:    'Commercial',
+  industrial:    'Industrial',
+  institutional: 'Institutional',
+  mixed:         'Mixed',
 }
 
 const PHASE_MODULES = [
-  { module: 'project_setup', label: 'প্রজেক্ট সেটআপ', icon: '⚙️', desc: 'গ্রিড, উপকরণ, লোড', phase: 1, available: true, color: '#ef4444' },
-  { module: 'modeling',      label: 'মডেলিং',         icon: '🏗️', desc: '2D/3D মডেল ক্যানভাস', phase: 2, available: false, color: '#f97316' },
-  { module: 'analysis',      label: 'অ্যানালাইসিস',   icon: '🧮', desc: 'DSM ফ্রেম সলভার',    phase: 4, available: false, color: '#22c55e' },
-  { module: 'design',        label: 'ডিজাইন',         icon: '📐', desc: 'ACI + BNBC ডিজাইন',  phase: 6, available: false, color: '#3b82f6' },
-  { module: 'detailing',     label: 'ডিটেইলিং',       icon: '✏️', desc: 'রিবার লেআউট',       phase: 8, available: false, color: '#8b5cf6' },
-  { module: 'compliance',    label: 'BNBC চেক',       icon: '✅', desc: 'কমপ্লায়েন্স রিপোর্ট', phase: 11, available: false, color: '#22c55e' },
+  { module: 'project_setup', label: 'Project Setup', icon: '⚙️', desc: 'Grid, Materials, Loads', phase: 1, available: true, color: '#dc2626' },
+  { module: 'modeling',      label: 'Modeling',       icon: '🏗️', desc: '2D/3D Model Canvas', phase: 2, available: false, color: '#d97706' },
+  { module: 'analysis',      label: 'Analysis',       icon: '🧮', desc: 'DSM Frame Solver',   phase: 4, available: false, color: '#059669' },
+  { module: 'design',        label: 'Design',         icon: '📐', desc: 'ACI + BNBC Design',  phase: 6, available: false, color: '#1a56db' },
+  { module: 'detailing',     label: 'Detailing',      icon: '✏️', desc: 'Rebar Layout',       phase: 8, available: false, color: '#7c3aed' },
+  { module: 'compliance',    label: 'BNBC Check',     icon: '✅', desc: 'Compliance Report',   phase: 11, available: false, color: '#059669' },
 ] as const
 
 export default function DashboardModule() {
@@ -51,13 +51,13 @@ export default function DashboardModule() {
   return (
     <div className="p-6 space-y-6 max-w-5xl">
       {/* Project Header Card */}
-      <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] overflow-hidden">
+      <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] overflow-hidden">
         <div className="h-1 rainbow-bar" />
         <div className="p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold text-slate-100 font-mono truncate">{meta.name}</h1>
-              <p className="text-slate-500 text-sm mt-1 font-mono">{meta.projectNo} • {meta.address}</p>
+              <h1 className="text-xl font-bold text-gray-900 font-mono truncate">{meta.name}</h1>
+              <p className="text-gray-500 text-sm mt-1 font-mono">{meta.projectNo} • {meta.address}</p>
             </div>
             <span
               className="px-3 py-1 rounded-full text-xs font-mono border shrink-0"
@@ -72,80 +72,80 @@ export default function DashboardModule() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-            <MetaItem label="স্ট্রাকচারাল সিস্টেম" value={SYSTEM_LABELS[meta.structuralSystem] ?? meta.structuralSystem} />
-            <MetaItem label="ভবনের ব্যবহার" value={USE_LABELS[meta.buildingUse] ?? meta.buildingUse} />
-            <MetaItem label="গুরুত্ব শ্রেণী" value={`Category ${meta.importanceCategory}`} />
-            <MetaItem label="প্রকৌশলী" value={meta.engineer || '—'} />
+            <MetaItem label="Structural System" value={SYSTEM_LABELS[meta.structuralSystem] ?? meta.structuralSystem} />
+            <MetaItem label="Building Use" value={USE_LABELS[meta.buildingUse] ?? meta.buildingUse} />
+            <MetaItem label="Importance Category" value={`Category ${meta.importanceCategory}`} />
+            <MetaItem label="Engineer" value={meta.engineer || '—'} />
           </div>
         </div>
       </div>
 
       {/* Stats Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard label="মোট তলা" value={totalStories || '—'} unit="টি" color="#3b82f6" icon="🏢" />
-        <StatCard label="ভবন উচ্চতা" value={buildingHeight > 0 ? buildingHeight.toFixed(1) : '—'} unit="m" color="#22c55e" icon="📏" />
-        <StatCard label="কলাম" value={totalColumns || '—'} unit="টি" color="#f97316" icon="⬜" />
-        <StatCard label="বিম" value={totalBeams || '—'} unit="টি" color="#8b5cf6" icon="━" />
+        <StatCard label="Total Stories" value={totalStories || '—'} unit="" color="#1a56db" icon="🏢" />
+        <StatCard label="Building Height" value={buildingHeight > 0 ? buildingHeight.toFixed(1) : '—'} unit="m" color="#059669" icon="📏" />
+        <StatCard label="Columns" value={totalColumns || '—'} unit="" color="#d97706" icon="⬜" />
+        <StatCard label="Beams" value={totalBeams || '—'} unit="" color="#7c3aed" icon="━" />
       </div>
 
       {/* Building Parameters */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Seismic info */}
-        <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] p-5">
-          <h3 className="text-slate-300 font-mono font-semibold text-sm mb-4">🌀 ভূমিকম্প প্যারামিটার</h3>
+        <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-5">
+          <h3 className="text-gray-700 font-mono font-semibold text-sm mb-4">🌀 Seismic Parameters</h3>
           <div className="space-y-2">
-            <ParamRow label="সিসমিক জোন" value={`Zone ${project.loads.seismicLoad.seismicZone ?? project.loads.seismicLoad.zone ?? 2}`} />
-            <ParamRow label="সাইট ক্লাস" value={project.loads.seismicLoad.siteClass} />
+            <ParamRow label="Seismic Zone" value={`Zone ${project.loads.seismicLoad.seismicZone ?? project.loads.seismicLoad.zone ?? 2}`} />
+            <ParamRow label="Site Class" value={project.loads.seismicLoad.siteClass} />
             <ParamRow label="Z (Zone Factor)" value={(project.loads.seismicLoad.Z ?? 0).toString()} />
             <ParamRow label="R (Response Mod.)" value={project.loads.seismicLoad.responseModificationFactor.toString()} />
-            <ParamRow label="বিশ্লেষণ পদ্ধতি" value={
+            <ParamRow label="Analysis Method" value={
               (project.loads.seismicLoad.analysisMethod ?? 'static') === 'static'
-                ? 'স্ট্যাটিক (ELF)'
+                ? 'Static (ELF)'
                 : (project.loads.seismicLoad.analysisMethod ?? 'static') === 'response_spectrum'
-                ? 'রেসপন্স স্পেকট্রাম'
-                : 'টাইম হিস্ট্রি'
+                ? 'Response Spectrum'
+                : 'Time History'
             } />
           </div>
         </div>
 
         {/* Material info */}
-        <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] p-5">
-          <h3 className="text-slate-300 font-mono font-semibold text-sm mb-4">🧱 উপকরণ</h3>
+        <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-5">
+          <h3 className="text-gray-700 font-mono font-semibold text-sm mb-4">🧱 Materials</h3>
           <div className="space-y-2">
-            <ParamRow label="কংক্রিট গ্রেড" value={project.materials.concrete.grade} />
+            <ParamRow label="Concrete Grade" value={project.materials.concrete.grade} />
             <ParamRow label="f'c" value={`${project.materials.concrete.fc} MPa`} />
             <ParamRow label="Ec" value={`${project.materials.concrete.Ec.toLocaleString()} MPa`} />
-            <ParamRow label="স্টিল গ্রেড" value={project.materials.steel.grade} />
+            <ParamRow label="Steel Grade" value={project.materials.steel.grade} />
             <ParamRow label="fy" value={`${project.materials.steel.fy} MPa`} />
           </div>
         </div>
       </div>
 
       {/* Analysis Status */}
-      <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] p-5">
-        <h3 className="text-slate-300 font-mono font-semibold text-sm mb-4">📊 অ্যানালাইসিস স্ট্যাটাস</h3>
+      <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-5">
+        <h3 className="text-gray-700 font-mono font-semibold text-sm mb-4">📊 Analysis Status</h3>
         <div className="flex items-center gap-3">
           <div
             className="w-3 h-3 rounded-full"
             style={{
-              background: results.status === 'complete' ? '#22c55e'
-                : results.status === 'running' ? '#f97316'
-                : results.status === 'failed' ? '#ef4444'
-                : '#475569',
+              background: results.status === 'complete' ? '#059669'
+                : results.status === 'running' ? '#d97706'
+                : results.status === 'failed' ? '#dc2626'
+                : '#6b7280',
             }}
           />
-          <span className="text-slate-400 font-mono text-sm">
-            {results.status === 'complete' ? '✓ অ্যানালাইসিস সম্পন্ন'
-              : results.status === 'running' ? '⟳ চলছে...'
-              : results.status === 'failed' ? '✗ ব্যর্থ হয়েছে'
-              : 'অপেক্ষায় আছে — মডেলিং শেষ হলে রান করুন'}
+          <span className="text-gray-600 font-mono text-sm">
+            {results.status === 'complete' ? '✓ Analysis Complete'
+              : results.status === 'running' ? '⟳ Running...'
+              : results.status === 'failed' ? '✗ Failed'
+              : 'Waiting — run after modeling is complete'}
           </span>
         </div>
       </div>
 
       {/* Module Cards */}
       <div>
-        <h3 className="text-slate-500 font-mono text-xs tracking-widest mb-4">WORKFLOW</h3>
+        <h3 className="text-gray-500 font-mono text-xs tracking-widest mb-4">WORKFLOW</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {PHASE_MODULES.map((m) => (
             <button
@@ -154,13 +154,13 @@ export default function DashboardModule() {
               disabled={!m.available}
               className={`p-4 rounded-xl border text-left transition-all ${
                 m.available
-                  ? 'border-[#1e2d4a] bg-[#0d1221] hover:border-[#1e3a5f] hover:bg-[#111827] cursor-pointer'
-                  : 'border-[#1a2030] bg-[#090e1a] opacity-40 cursor-not-allowed'
+                  ? 'border-[#e5e7eb] bg-[#f9fafb] hover:border-blue-300 hover:bg-white hover:shadow-sm cursor-pointer'
+                  : 'border-[#f3f4f6] bg-[#ffffff] opacity-40 cursor-not-allowed'
               }`}
             >
               <div className="text-2xl mb-3">{m.icon}</div>
-              <div className="text-xs font-mono font-semibold text-slate-300">{m.label}</div>
-              <div className="text-xs text-slate-600 mt-1 font-mono">{m.desc}</div>
+              <div className="text-xs font-mono font-semibold text-gray-700">{m.label}</div>
+              <div className="text-xs text-gray-500 mt-1 font-mono">{m.desc}</div>
               {!m.available && (
                 <div className="mt-2 text-xs font-mono" style={{ color: m.color }}>
                   Phase {m.phase}
@@ -179,8 +179,8 @@ export default function DashboardModule() {
 function MetaItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-slate-600 text-xs font-mono">{label}</p>
-      <p className="text-slate-300 text-sm font-mono font-semibold mt-0.5 truncate">{value}</p>
+      <p className="text-gray-500 text-xs font-mono">{label}</p>
+      <p className="text-gray-700 text-sm font-mono font-semibold mt-0.5 truncate">{value}</p>
     </div>
   )
 }
@@ -198,18 +198,18 @@ function StatCard({
       <div className="text-xl mb-2">{icon}</div>
       <div className="text-2xl font-bold font-mono" style={{ color }}>
         {value}
-        <span className="text-sm font-normal text-slate-500 ml-1">{unit}</span>
+        <span className="text-sm font-normal text-gray-500 ml-1">{unit}</span>
       </div>
-      <div className="text-xs text-slate-600 font-mono mt-1">{label}</div>
+      <div className="text-xs text-gray-500 font-mono mt-1">{label}</div>
     </div>
   )
 }
 
 function ParamRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between py-1 border-b border-[#1a2030] last:border-0">
-      <span className="text-slate-500 text-xs font-mono">{label}</span>
-      <span className="text-slate-300 text-xs font-mono font-semibold">{value}</span>
+    <div className="flex items-center justify-between py-1 border-b border-[#f3f4f6] last:border-0">
+      <span className="text-gray-500 text-xs font-mono">{label}</span>
+      <span className="text-gray-700 text-xs font-mono font-semibold">{value}</span>
     </div>
   )
 }

@@ -11,23 +11,23 @@ type CategoryFilter = 'all' | ComplianceCheck['category']
 type StatusFilter   = 'all' | ComplianceCheck['status']
 
 const CATEGORY_LABELS: Record<string, { label: string; icon: string; color: string }> = {
-  drift:        { label: 'Story Drift',   icon: '⇄', color: '#ef4444' },
-  irregularity: { label: 'Irregularity',  icon: '⬡', color: '#f97316' },
-  ductility:    { label: 'Ductility',     icon: '🔗', color: '#eab308' },
-  detailing:    { label: 'Detailing',     icon: '✏', color: '#22c55e' },
-  shear:        { label: 'Shear/Lateral', icon: '↔', color: '#06b6d4' },
-  bearing:      { label: 'Bearing',       icon: '▲', color: '#8b5cf6' },
+  drift:        { label: 'Story Drift',   icon: '⇄', color: '#dc2626' },
+  irregularity: { label: 'Irregularity',  icon: '⬡', color: '#d97706' },
+  ductility:    { label: 'Ductility',     icon: '🔗', color: '#d97706' },
+  detailing:    { label: 'Detailing',     icon: '✏', color: '#059669' },
+  shear:        { label: 'Shear/Lateral', icon: '↔', color: '#0891b2' },
+  bearing:      { label: 'Bearing',       icon: '▲', color: '#7c3aed' },
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  pass:        '#22c55e',
-  fail:        '#ef4444',
-  warning:     '#f97316',
-  not_checked: '#475569',
+  pass:        '#059669',
+  fail:        '#dc2626',
+  warning:     '#d97706',
+  not_checked: '#6b7280',
 }
 
 const GRADE_COLORS: Record<string, string> = {
-  A: '#22c55e', B: '#3b82f6', C: '#eab308', D: '#f97316', F: '#ef4444',
+  A: '#059669', B: '#1a56db', C: '#d97706', D: '#d97706', F: '#dc2626',
 }
 
 export default function ComplianceModule() {
@@ -58,8 +58,8 @@ export default function ComplianceModule() {
         <div>
           <div className="h-0.5 rounded mb-4"
             style={{ background: `linear-gradient(90deg,${STATUS_COLORS[report.overallStatus]},transparent)` }} />
-          <h2 className="text-slate-200 font-mono font-bold text-base">BNBC 2020 Compliance Dashboard</h2>
-          <p className="text-slate-500 font-mono text-xs mt-1">
+          <h2 className="text-gray-800 font-mono font-bold text-base">BNBC 2020 Compliance Dashboard</h2>
+          <p className="text-gray-500 font-mono text-xs mt-1">
             {project.meta.name} · {project.meta.projectNo} · Auto-generated compliance check
           </p>
         </div>
@@ -72,7 +72,7 @@ export default function ComplianceModule() {
             <div className="text-6xl font-black font-mono" style={{ color: GRADE_COLORS[score.grade] }}>
               {score.grade}
             </div>
-            <div className="text-xs font-mono text-slate-500">Compliance Grade</div>
+            <div className="text-xs font-mono text-gray-500">Compliance Grade</div>
             <div className="text-2xl font-bold font-mono" style={{ color: GRADE_COLORS[score.grade] }}>
               {score.score}/100
             </div>
@@ -81,15 +81,15 @@ export default function ComplianceModule() {
           {/* Check counts */}
           <div className="sm:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { label: 'Pass',    value: score.passed,  color: '#22c55e' },
-              { label: 'Fail',    value: score.failed,  color: '#ef4444' },
-              { label: 'Warning', value: score.warned,  color: '#f97316' },
-              { label: 'Skipped', value: score.skipped, color: '#475569' },
+              { label: 'Pass',    value: score.passed,  color: '#059669' },
+              { label: 'Fail',    value: score.failed,  color: '#dc2626' },
+              { label: 'Warning', value: score.warned,  color: '#d97706' },
+              { label: 'Skipped', value: score.skipped, color: '#6b7280' },
             ].map(s => (
               <div key={s.label} className="rounded-xl border p-4 text-center"
                 style={{ borderColor: s.color+'30', background: s.color+'08' }}>
                 <div className="text-2xl font-bold font-mono" style={{ color: s.color }}>{s.value}</div>
-                <div className="text-xs font-mono text-slate-500 mt-1">{s.label}</div>
+                <div className="text-xs font-mono text-gray-500 mt-1">{s.label}</div>
               </div>
             ))}
           </div>
@@ -106,12 +106,12 @@ export default function ComplianceModule() {
           </span>
           <div>
             <div className="font-mono font-bold text-sm" style={{ color: STATUS_COLORS[report.overallStatus] }}>
-              {report.overallStatus === 'pass' ? 'সব BNBC 2020 চেক PASS — ভবন compliance-এ আছে'
-                : report.overallStatus === 'fail' ? `${score.failed}টি critical failure — সংশোধন করুন`
-                : `${score.warned}টি warning — review করুন`}
+              {report.overallStatus === 'pass' ? 'All BNBC 2020 checks PASS — building is compliant'
+                : report.overallStatus === 'fail' ? `${score.failed} critical failure(s) — please correct`
+                : `${score.warned} warning(s) — please review`}
             </div>
-            <div className="text-xs text-slate-500 font-mono mt-0.5">
-              {score.total} checks · Generated: {new Date(report.generatedAt).toLocaleString('bn-BD')}
+            <div className="text-xs text-gray-500 font-mono mt-0.5">
+              {score.total} checks · Generated: {new Date(report.generatedAt).toLocaleString('en-US')}
             </div>
           </div>
         </div>
@@ -143,26 +143,26 @@ export default function ComplianceModule() {
 
         {/* Filters */}
         <div className="flex items-center gap-3 flex-wrap">
-          <span className="text-slate-500 text-xs font-mono">Status:</span>
+          <span className="text-gray-500 text-xs font-mono">Status:</span>
           {(['all', 'pass', 'fail', 'warning', 'not_checked'] as const).map(s => (
             <button key={s} onClick={() => setStatFilter(s)}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-all ${
                 statFilter === s
-                  ? 'text-white border-slate-500 bg-slate-500/20'
-                  : 'border-[#1e2d4a] text-slate-500 hover:text-slate-300'
+                  ? 'text-gray-900 border-gray-400 bg-gray-200'
+                  : 'border-[#e5e7eb] text-gray-500 hover:text-gray-700'
               }`}
               style={statFilter === s && s !== 'all' ? {
                 borderColor: STATUS_COLORS[s]+'60',
                 background:  STATUS_COLORS[s]+'15',
                 color:       STATUS_COLORS[s],
               } : {}}>
-              {s === 'all' ? 'সব' : s === 'not_checked' ? 'Skipped' : s.charAt(0).toUpperCase() + s.slice(1)}
+              {s === 'all' ? 'All' : s === 'not_checked' ? 'Skipped' : s.charAt(0).toUpperCase() + s.slice(1)}
               {s !== 'all' && (
                 <span className="ml-1">({report.checks.filter(c => c.status === s).length})</span>
               )}
             </button>
           ))}
-          <span className="ml-auto text-xs font-mono text-slate-600">{filtered.length} checks</span>
+          <span className="ml-auto text-xs font-mono text-gray-500">{filtered.length} checks</span>
         </div>
 
         {/* Checks list */}
@@ -176,20 +176,20 @@ export default function ComplianceModule() {
             />
           ))}
           {filtered.length === 0 && (
-            <div className="text-center text-slate-600 font-mono text-sm py-12">
-              এই ফিল্টারে কোনো check নেই
+            <div className="text-center text-gray-500 font-mono text-sm py-12">
+              No checks match this filter
             </div>
           )}
         </div>
 
         {/* BNBC Reference note */}
-        <div className="rounded-xl border border-[#1e2d4a] bg-[#0d1221] p-4 text-xs font-mono text-slate-500 space-y-1">
-          <div className="text-slate-400 font-semibold">📚 Reference Documents</div>
+        <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-4 text-xs font-mono text-gray-500 space-y-1">
+          <div className="text-gray-600 font-semibold">📚 Reference Documents</div>
           <div>• Bangladesh National Building Code (BNBC) 2020</div>
           <div>• ACI 318-19: Building Code Requirements for Structural Concrete</div>
           <div>• IS 2502: Code of Practice for Bending and Fixing of Bars for Concrete Reinforcement</div>
-          <div className="text-slate-600 mt-2">
-            ⚠ এই compliance check preliminary — final review একজন licensed structural engineer দিয়ে করাতে হবে।
+          <div className="text-gray-500 mt-2">
+            ⚠ This compliance check is preliminary — final review must be done by a licensed structural engineer.
           </div>
         </div>
 
@@ -229,15 +229,15 @@ function CheckCard({ check, expanded, onToggle }: {
 
         {/* Name */}
         <div className="flex-1 min-w-0">
-          <div className="font-mono text-sm font-semibold text-slate-200 truncate">
+          <div className="font-mono text-sm font-semibold text-gray-800 truncate">
             {check.nameLocal}
           </div>
-          <div className="text-xs font-mono text-slate-600 mt-0.5">{check.bnbcReference}</div>
+          <div className="text-xs font-mono text-gray-500 mt-0.5">{check.bnbcReference}</div>
         </div>
 
         {/* Category badge */}
         <span className="text-xs font-mono px-2 py-0.5 rounded-full shrink-0"
-          style={{ background: (catInfo?.color ?? '#475569')+'20', color: catInfo?.color ?? '#475569' }}>
+          style={{ background: (catInfo?.color ?? '#6b7280')+'20', color: catInfo?.color ?? '#6b7280' }}>
           {catInfo?.icon} {catInfo?.label}
         </span>
 
@@ -246,60 +246,60 @@ function CheckCard({ check, expanded, onToggle }: {
           <div className="font-mono font-bold text-sm" style={{ color }}>
             {check.value.toFixed(3)}
           </div>
-          <div className="text-xs text-slate-600 font-mono">
+          <div className="text-xs text-gray-500 font-mono">
             / {check.limit.toFixed(3)} {check.unit}
           </div>
         </div>
 
         {/* Expand chevron */}
-        <span className="text-slate-600 text-xs ml-1">{expanded ? '▲' : '▼'}</span>
+        <span className="text-gray-500 text-xs ml-1">{expanded ? '▲' : '▼'}</span>
       </button>
 
       {/* Progress bar */}
       {check.status !== 'not_checked' && (
-        <div className="h-1 bg-[#1e2d4a]">
+        <div className="h-1 bg-[#e5e7eb]">
           <div className="h-full transition-all duration-500 rounded-r"
             style={{
               width: `${Math.min(pct, 100)}%`,
-              background: check.status === 'pass' ? '#22c55e'
-                : check.status === 'fail' ? '#ef4444'
-                : '#f97316',
+              background: check.status === 'pass' ? '#059669'
+                : check.status === 'fail' ? '#dc2626'
+                : '#d97706',
             }} />
         </div>
       )}
 
       {/* Expanded details */}
       {expanded && (
-        <div className="px-4 py-3 border-t border-[#1e2d4a] bg-[#080d1a] space-y-3">
+        <div className="px-4 py-3 border-t border-[#e5e7eb] bg-[#ffffff] space-y-3">
           <div className="grid grid-cols-3 gap-3 text-xs font-mono">
-            <div className="bg-[#0d1221] rounded-lg p-3 border border-[#1e2d4a]">
-              <div className="text-slate-500">Actual Value</div>
+            <div className="bg-[#f9fafb] rounded-lg p-3 border border-[#e5e7eb]">
+              <div className="text-gray-500">Actual Value</div>
               <div className="font-bold mt-1" style={{ color }}>
                 {check.value.toFixed(4)} {check.unit}
               </div>
             </div>
-            <div className="bg-[#0d1221] rounded-lg p-3 border border-[#1e2d4a]">
-              <div className="text-slate-500">Code Limit</div>
-              <div className="font-bold mt-1 text-slate-300">
+            <div className="bg-[#f9fafb] rounded-lg p-3 border border-[#e5e7eb]">
+              <div className="text-gray-500">Code Limit</div>
+              <div className="font-bold mt-1 text-gray-700">
                 {check.limit.toFixed(4)} {check.unit}
               </div>
             </div>
-            <div className="bg-[#0d1221] rounded-lg p-3 border border-[#1e2d4a]">
-              <div className="text-slate-500">Ratio (V/L)</div>
-              <div className="font-bold mt-1" style={{ color: ratio > 1 ? '#ef4444' : '#22c55e' }}>
+            <div className="bg-[#f9fafb] rounded-lg p-3 border border-[#e5e7eb]">
+              <div className="text-gray-500">Ratio (V/L)</div>
+              <div className="font-bold mt-1" style={{ color: ratio > 1 ? '#dc2626' : '#059669' }}>
                 {check.limit > 0 ? ratio.toFixed(3) : '—'}
               </div>
             </div>
           </div>
 
           {check.suggestion && (
-            <div className="text-xs font-mono text-slate-400 bg-[#0d1221] rounded-lg px-3 py-2 border border-[#1e2d4a]">
+            <div className="text-xs font-mono text-gray-600 bg-[#f9fafb] rounded-lg px-3 py-2 border border-[#e5e7eb]">
               💡 {check.suggestion}
             </div>
           )}
 
           {check.failedMembers && check.failedMembers.length > 0 && (
-            <div className="text-xs font-mono text-red-400 bg-red-500/5 rounded-lg px-3 py-2 border border-red-500/20">
+            <div className="text-xs font-mono text-red-600 bg-red-500/5 rounded-lg px-3 py-2 border border-red-500/20">
               Failed members: {check.failedMembers.join(', ')}
             </div>
           )}

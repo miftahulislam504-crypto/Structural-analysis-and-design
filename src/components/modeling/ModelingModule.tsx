@@ -38,7 +38,7 @@ export default function ModelingModule() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#0a0f1e]">
+    <div className="flex flex-col h-full bg-[#ffffff]">
       {/* Top toolbar */}
       <ModelingToolbar
         activeTool={activeTool}
@@ -95,15 +95,15 @@ function EmptyGridNotice() {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4 text-center p-8">
       <div className="text-5xl">⊞</div>
-      <h3 className="text-slate-300 font-mono font-bold">গ্রিড সংজ্ঞায়িত করা হয়নি</h3>
-      <p className="text-slate-600 font-mono text-sm max-w-xs">
-        মডেলিং শুরু করতে আগে প্রজেক্ট সেটআপ থেকে গ্রিড লাইন ও তলা যোগ করুন
+      <h3 className="text-gray-700 font-mono font-bold">No Grid Defined</h3>
+      <p className="text-gray-500 font-mono text-sm max-w-xs">
+        Add grid lines and stories from Project Setup before starting modeling
       </p>
       <button
         onClick={() => setActiveModule('project_setup')}
-        className="px-6 py-2.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 font-mono text-sm hover:bg-red-500/30 transition-all"
+        className="px-6 py-2.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-600 font-mono text-sm hover:bg-red-500/30 transition-all"
       >
-        ⚙ প্রজেক্ট সেটআপে যান
+        ⚙ Go to Project Setup
       </button>
     </div>
   )
@@ -119,23 +119,23 @@ function StatusBar({
   project: any
 }) {
   const toolLabels: Record<DrawingTool, string> = {
-    select: 'নির্বাচন মোড',
-    column: 'কলাম স্থাপন — গ্রিড পয়েন্টে ক্লিক করুন',
-    beam: 'বিম আঁকুন — শুরু বিন্দু ক্লিক করুন',
-    slab: 'স্ল্যাব — (Phase 3)',
-    wall: 'দেওয়াল — (Phase 3)',
+    select: 'Select Mode',
+    column: 'Placing column — click on a grid point',
+    beam: 'Drawing beam — click the start point',
+    slab: 'Slab — (Phase 3)',
+    wall: 'Wall — (Phase 3)',
   }
 
   const cols = project.members.columns.filter((c: any) => c.storyId === activeStory?.id).length
   const beams = project.members.beams.filter((b: any) => b.storyId === activeStory?.id).length
 
   return (
-    <div className="h-8 border-t border-[#1e2d4a] bg-[#080d1a] flex items-center px-4 gap-6 text-xs font-mono text-slate-600 shrink-0">
-      <span className="text-slate-500">{toolLabels[activeTool]}</span>
-      <span className="ml-auto">তলা: {activeStory?.label ?? '—'}</span>
-      <span>কলাম: {cols}</span>
-      <span>বিম: {beams}</span>
-      <span>মোট কলাম: {project.members.columns.length}</span>
+    <div className="h-8 border-t border-[#e5e7eb] bg-[#ffffff] flex items-center px-4 gap-6 text-xs font-mono text-gray-500 shrink-0">
+      <span className="text-gray-500">{toolLabels[activeTool]}</span>
+      <span className="ml-auto">Story: {activeStory?.label ?? '—'}</span>
+      <span>Columns: {cols}</span>
+      <span>Beams: {beams}</span>
+      <span>Total Columns: {project.members.columns.length}</span>
     </div>
   )
 }

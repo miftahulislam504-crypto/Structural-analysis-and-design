@@ -8,8 +8,8 @@ export default function StorySelector() {
   if (!project || project.grid.stories.length === 0) return null
 
   return (
-    <div className="flex items-center gap-1 px-4 py-2 border-b border-[#1e2d4a] bg-[#080d1a] overflow-x-auto shrink-0">
-      <span className="text-slate-600 text-xs font-mono mr-2 shrink-0">তলা:</span>
+    <div className="flex items-center gap-1 px-4 py-2 border-b border-[#e5e7eb] bg-[#ffffff] overflow-x-auto shrink-0">
+      <span className="text-gray-500 text-xs font-mono mr-2 shrink-0">Story:</span>
       {project.grid.stories.map((story, index) => {
         const isActive = activeStoryIndex === index
         const memberCount =
@@ -24,8 +24,8 @@ export default function StorySelector() {
               flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono
               border shrink-0 transition-all
               ${isActive
-                ? 'border-red-500/50 bg-red-500/15 text-red-400'
-                : 'border-[#1e2d4a] text-slate-500 hover:text-slate-300 hover:border-slate-600'
+                ? 'border-red-500/50 bg-red-500/15 text-red-600'
+                : 'border-[#e5e7eb] text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }
             `}
           >
@@ -37,8 +37,8 @@ export default function StorySelector() {
               <span
                 className="text-xs rounded-full px-1.5"
                 style={{
-                  background: isActive ? 'rgba(239,68,68,0.2)' : 'rgba(100,116,139,0.2)',
-                  color: isActive ? '#fca5a5' : '#64748b',
+                  background: isActive ? 'rgba(220,38,38,0.12)' : 'rgba(107,114,128,0.12)',
+                  color: isActive ? '#dc2626' : '#6b7280',
                 }}
               >
                 {memberCount}
