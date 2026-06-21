@@ -31,6 +31,10 @@ import {
   generateId, now,
   defaultConcrete, defaultSteel, defaultLoadCombinations,
 } from '../lib/utils'
+import { useAuthStore } from './useAuthStore'
+import {
+  fetchHubProjectBundle, buildProjectFromHub, pushProjectToHub,
+} from '../lib/hubBridge'
 
 // ─────────────────────────────────────────────
 // PROJECT SUMMARY (for dashboard list)
@@ -243,6 +247,7 @@ interface ProjectState {
   isSaving:    boolean
   isDirty:     boolean
   error:       string | null
+  justAutoInitFromHub: boolean
 
   // Actions
   setProject:       (project: CivilOSProject) => void
@@ -276,6 +281,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   isSaving:    false,
   isDirty:     false,
   error:       null,
+  justAutoInitFromHub: false,
 
   setProject: (project) => {
     set({ project, isDirty: true })
@@ -286,20 +292,40 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const project = buildProject(template, meta, uid)
     set({ project, isDirty: false })
     get().saveProject().catch(console.error)
+    pushProjectToHub(project).catch(console.error)
     return project
   },
 
   loadProject: async (id) => {
-    set({ isLoading: true, error: null })
+    set({ isLoading: true, error: null, justAutoInitFromHub: false })
     try {
       // Structural data lives in subcollection to avoid overwriting Hub's project doc
       const snap = await getDoc(doc(db, 'projects', id, 'structuralData', 'civp'))
-      if (!snap.exists()) {
-        set({ error: 'স্ট্রাকচারাল ডেটা পাওয়া যায়নি', isLoading: false })
+      if (snap.exists()) {
+        const data = snap.data() as CivilOSProject
+        set({ project: data, isLoading: false, isDirty: false })
         return
       }
-      const data = snap.data() as CivilOSProject
-      set({ project: data, isLoading: false, isDirty: false })
+
+      // No structural data yet for this Hub project — this is the
+      // *normal* state for any freshly-created Hub project. Pull
+      // whatever Hub already knows (project info, Site Info, BNBC
+      // Settings, Building Info) and auto-initialize a structural
+      // project from it instead of dead-ending here.
+      const bundle = await fetchHubProjectBundle(id)
+      if (!bundle.project) {
+        set({
+          error: 'এই প্রজেক্ট খুঁজে পাওয়া যায়নি — Hub-এ এই ID-র কোনো প্রজেক্ট নেই',
+          isLoading: false,
+        })
+        return
+      }
+
+      const uid     = useAuthStore.getState().user?.uid ?? bundle.project.createdBy ?? 'unknown'
+      const project = buildProjectFromHub(id, bundle, uid)
+
+      await setDoc(doc(db, 'projects', id, 'structuralData', 'civp'), project)
+      set({ project, isLoading: false, isDirty: false, justAutoInitFromHub: true })
     } catch (e: any) {
       set({ error: `লোড ব্যর্থ: ${e.message}`, isLoading: false })
     }

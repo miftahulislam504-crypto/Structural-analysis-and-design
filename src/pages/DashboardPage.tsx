@@ -55,7 +55,7 @@ export default function DashboardPage() {
       address: form.address,
       engineer: form.engineer,
       projectNo: form.projectNo,
-    })
+    }, user?.uid)
     navigate(`/project/${project.id}`)
   }
 

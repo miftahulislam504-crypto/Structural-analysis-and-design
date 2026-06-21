@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useProjectStore } from '../store/useProjectStore'
 import { useUIStore } from '../store/useUIStore'
@@ -41,7 +41,7 @@ const MODULE_MAP: Record<ActiveModule, React.FC> = {
 export default function ProjectPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { project, loadProject, isLoading, error } = useProjectStore()
+  const { project, loadProject, isLoading, error, justAutoInitFromHub } = useProjectStore()
   const { activeModule } = useUIStore()
 
   useEffect(() => { if (id && !project) loadProject(id) }, [id])
@@ -57,8 +57,20 @@ export default function ProjectPage() {
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar />
+        {justAutoInitFromHub && <HubAutoInitBanner />}
         <main className="flex-1 overflow-auto"><ActiveComponent /></main>
       </div>
+    </div>
+  )
+}
+
+function HubAutoInitBanner() {
+  const [dismissed, setDismissed] = useState(false)
+  if (dismissed) return null
+  return (
+    <div className="px-4 py-2 bg-blue-50 border-b border-blue-100 text-blue-700 text-xs font-mono flex items-center justify-between gap-3">
+      <span>🔗 CivilOS Hub-এর Site Info / BNBC / Building Info থেকে এই প্রজেক্ট স্বয়ংক্রিয়ভাবে শুরু করা হয়েছে — Project Setup-এ গিয়ে মান যাচাই করুন।</span>
+      <button onClick={() => setDismissed(true)} className="text-blue-400 hover:text-blue-700 flex-shrink-0">✕</button>
     </div>
   )
 }
