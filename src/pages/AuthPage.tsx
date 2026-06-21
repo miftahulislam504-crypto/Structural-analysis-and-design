@@ -2,20 +2,14 @@ import { useState } from 'react'
 import { useAuthStore } from '../store/useAuthStore'
 
 export default function AuthPage() {
-  const [mode, setMode] = useState<'login' | 'register'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-  const { login, register, isLoading, error, clearError } = useAuthStore()
+  const { login, isLoading, error, clearError } = useAuthStore()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     clearError()
-    if (mode === 'login') {
-      await login(email, password)
-    } else {
-      await register(email, password, name)
-    }
+    await login(email, password)
   }
 
   return (
@@ -42,41 +36,15 @@ export default function AuthPage() {
 
         {/* Card */}
         <div className="glass rounded-xl p-8">
-          {/* Tab switcher */}
-          <div className="flex rounded-lg overflow-hidden border border-[#e5e7eb] mb-8">
-            {(['login', 'register'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => { setMode(tab); clearError() }}
-                className={`flex-1 py-3 text-sm font-mono font-medium transition-all ${
-                  mode === tab
-                    ? 'bg-blue-500/15 text-blue-700 border-b-2 border-blue-600'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {tab === 'login' ? 'Login' : 'New Account'}
-              </button>
-            ))}
+          {/* Header */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-gray-800 font-mono">Login</h2>
+            <p className="text-gray-500 text-xs font-mono mt-1">
+              আপনার অ্যাকাউন্টে প্রবেশ করুন
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name field (register only) */}
-            {mode === 'register' && (
-              <div>
-                <label className="block text-xs text-gray-600 font-mono tracking-wider mb-2">
-                  Engineer Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Engr. Your Name"
-                  required
-                  className="w-full bg-[#ffffff] border border-[#e5e7eb] rounded-lg px-4 py-3 text-gray-800 placeholder-slate-600 font-mono text-sm focus:border-blue-500 focus:outline-none transition-colors"
-                />
-              </div>
-            )}
-
             {/* Email */}
             <div>
               <label className="block text-xs text-gray-600 font-mono tracking-wider mb-2">
@@ -85,7 +53,7 @@ export default function AuthPage() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); clearError() }}
                 placeholder="engineer@example.com"
                 required
                 className="w-full bg-[#ffffff] border border-[#e5e7eb] rounded-lg px-4 py-3 text-gray-800 placeholder-slate-600 font-mono text-sm focus:border-blue-500 focus:outline-none transition-colors"
@@ -100,7 +68,7 @@ export default function AuthPage() {
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => { setPassword(e.target.value); clearError() }}
                 placeholder="••••••••"
                 required
                 className="w-full bg-[#ffffff] border border-[#e5e7eb] rounded-lg px-4 py-3 text-gray-800 placeholder-slate-600 font-mono text-sm focus:border-blue-500 focus:outline-none transition-colors"
@@ -120,11 +88,7 @@ export default function AuthPage() {
               disabled={isLoading}
               className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white font-mono font-semibold text-sm tracking-wider hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
-              {isLoading
-                ? 'Please wait...'
-                : mode === 'login'
-                ? 'Login →'
-                : 'Create Account →'}
+              {isLoading ? 'Please wait...' : 'Login →'}
             </button>
           </form>
 

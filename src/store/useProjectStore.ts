@@ -168,11 +168,28 @@ function makeEmptyAnalyticalModel(): AnalyticalModel {
   }
 }
 
+// ─────────────────────────────────────────────
+// FIRESTORE SANITIZER
+// Recursively removes undefined values (Firestore does NOT support undefined)
+// ─────────────────────────────────────────────
+function sanitizeForFirestore(obj: any): any {
+  if (obj === null || obj === undefined) return null
+  if (typeof obj !== 'object') return obj
+  if (Array.isArray(obj)) return obj.map(sanitizeForFirestore)
+  const result: Record<string, any> = {}
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      result[key] = sanitizeForFirestore(value)
+    }
+  }
+  return result
+}
+
 function makeEmptyResults(): AnalysisResults {
   return {
     status: 'pending',
     memberForces: [],
-    modalResults: undefined,
+    // modalResults is omitted intentionally — undefined crashes Firestore setDoc
   }
 }
 
@@ -324,7 +341,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       const uid     = useAuthStore.getState().user?.uid ?? bundle.project.createdBy ?? 'unknown'
       const project = buildProjectFromHub(id, bundle, uid)
 
-      await setDoc(doc(db, 'projects', id, 'structuralData', 'civp'), project)
+      await setDoc(doc(db, 'projects', id, 'structuralData', 'civp'), sanitizeForFirestore(project))
       set({ project, isLoading: false, isDirty: false, justAutoInitFromHub: true })
     } catch (e: any) {
       set({ error: `লোড ব্যর্থ: ${e.message}`, isLoading: false })
@@ -339,7 +356,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       const updated = { ...project, meta: { ...project.meta, updatedAt: now() } }
       // Save structural data to subcollection — preserves Hub's root project document
       // Path: projects/{hubProjectId}/structuralData/civp
-      await setDoc(doc(db, 'projects', project.id, 'structuralData', 'civp'), updated)
+      await setDoc(doc(db, 'projects', project.id, 'structuralData', 'civp'), sanitizeForFirestore(updated))
       set({ project: updated, isSaving: false, isDirty: false })
     } catch (e: any) {
       console.error('Save failed:', e)
